@@ -2,6 +2,8 @@
 module.exports = {
   content: ['./src/**/*.{ts,tsx}'],
   presets: [require('nativewind/preset')],
+  // 'media' makes NativeWind throw on web when the page's color scheme is toggled; dark styles come in phase 7.
+  darkMode: 'class',
   theme: {
     extend: {
       // DaisyUI-style semantic color tokens

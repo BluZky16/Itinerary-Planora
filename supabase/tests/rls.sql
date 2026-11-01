@@ -1,6 +1,6 @@
 -- RLS test. Run in the Supabase SQL editor after the migration.
 -- Creates two fake users, proves user B cannot see or change user A's data,
--- then rolls everything back. Prints "RLS tests passed" on success; any failure raises an error.
+-- then rolls everything back. Shows one row "RLS tests passed" on success; any failure raises an error.
 begin;
 
 insert into auth.users (id, email) values
@@ -68,5 +68,5 @@ begin
 end $$;
 
 reset role;
-do $$ begin raise notice 'RLS tests passed'; end $$;
 rollback;
+select 'RLS tests passed' as result;  -- only reached if every assert above held

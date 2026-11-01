@@ -13,15 +13,15 @@ set local role authenticated;
 
 insert into public.trips (id, title, start_date, end_date)
   values ('10000000-0000-0000-0000-000000000001', 'A trip', '2026-12-01', '2026-12-03');
-insert into public.days (id, trip_id, date, position)
-  values ('20000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', '2026-12-01', 0);
+-- the trips_sync_days trigger created the 3 days; give the first one a known id
+update public.days set id = '20000000-0000-0000-0000-000000000001' where date = '2026-12-01';
 insert into public.items (day_id, position, type, title)
   values ('20000000-0000-0000-0000-000000000001', 0, 'other', 'A item');
 
 do $$
 begin
   assert (select count(*) from public.trips) = 1, 'A should see own trip';
-  assert (select count(*) from public.days) = 1, 'A should see own day';
+  assert (select count(*) from public.days) = 3, 'A should see own days';
   assert (select count(*) from public.items) = 1, 'A should see own item';
 end $$;
 
@@ -47,7 +47,7 @@ begin
 
   begin
     insert into public.days (trip_id, date, position)
-      values ('10000000-0000-0000-0000-000000000001', '2026-12-02', 1);
+      values ('10000000-0000-0000-0000-000000000001', '2026-12-10', 9);
     raise exception 'B inserted a day into A trip';
   exception when insufficient_privilege then null;  -- expected: RLS violation
   end;

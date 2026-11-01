@@ -21,6 +21,13 @@ test('one-day trip is allowed', () => {
   expect(parseTripForm({ ...valid, end_date: '2026-12-24' })).toHaveProperty('input');
 });
 
+test('trip is capped at 90 days', () => {
+  expect(parseTripForm({ ...valid, start_date: '2026-01-01', end_date: '2026-03-31' })).toHaveProperty('input'); // 90 days
+  expect(parseTripForm({ ...valid, start_date: '2026-01-01', end_date: '2026-04-01' })).toEqual({
+    errors: { end_date: 'A trip can be at most 90 days.' },
+  });
+});
+
 test('rejects missing title, bad dates and end before start', () => {
   expect(parseTripForm({ ...valid, title: '  ' })).toEqual({ errors: { title: 'Title is required.' } });
   expect(parseTripForm({ ...valid, start_date: '24/12/2026' })).toHaveProperty('errors.start_date');

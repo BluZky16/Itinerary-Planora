@@ -1,3 +1,4 @@
+import { ITEM_COLUMNS, type Item } from '@/api/items';
 import { supabase } from '@/lib/supabase';
 
 export type Trip = {
@@ -22,6 +23,22 @@ export async function getTrip(id: string): Promise<Trip> {
   const { data, error } = await supabase.from('trips').select(COLUMNS).eq('id', id).single();
   if (error) throw error;
   return data;
+}
+
+export type Day = { id: string; date: string; items: Item[] };
+export type TripPlan = Trip & { days: Day[] };
+
+// Trip with its days (created by the database from the trip dates) and their items, in order.
+export async function getTripPlan(id: string): Promise<TripPlan> {
+  const { data, error } = await supabase
+    .from('trips')
+    .select(`${COLUMNS}, days(id, date, items(${ITEM_COLUMNS}))`)
+    .eq('id', id)
+    .order('date', { referencedTable: 'days' })
+    .order('position', { referencedTable: 'days.items' })
+    .single();
+  if (error) throw error;
+  return data as TripPlan;
 }
 
 export async function createTrip(input: TripInput): Promise<Trip> {

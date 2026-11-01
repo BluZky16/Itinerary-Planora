@@ -80,7 +80,8 @@ Collaborators with edit rights, expense split, a separate "actually paid" amount
 profiles(id uuid pk -> auth.users, display_name text)
 
 trips(id uuid pk, owner_id uuid -> profiles, title text, destination text,
-      start_date date, end_date date, share_token text unique null,
+      start_date date, end_date date,            -- check: end_date - start_date < 90
+      share_token text unique null,
       budget numeric null, currency text null,        -- added in phase 5
       created_at timestamptz)
 
@@ -104,8 +105,11 @@ Rules:
 - Budget remaining = `trips.budget` minus the sum of item costs. The breakdown groups item costs by `type`.
 - Dashboard numbers are queries, not stored: trips count, `country_marks` where status is visited, sum of item costs, and the trip with the earliest `start_date` today or later.
 - Dates are plain `date`/`time` values in the trip's local time. Do not convert through UTC.
-- `position` orders items within a day; reordering rewrites positions for that day in one transaction.
-- Changing trip dates must not silently delete days that still have items: ask the user to move or delete them first.
+- `position` orders items within a day. The `move_item(item, day, index)` function moves an item within a day or to another day of the same trip and renumbers both days in one transaction.
+- Days are kept in sync with the trip dates by the `trips_sync_days` trigger. Changing dates so that a day with items would be removed is refused with a message; the user moves or deletes those items first.
+- A trip is at most 90 days (database check and form check), so one row per day stays small.
+- Item order is manual (move up/down); items are not auto-sorted by time.
+- Transport has no separate mode column: the title carries it ("Train to Bandung").
 
 ### Row Level Security
 
@@ -151,6 +155,8 @@ itinerary/
         trip/new.tsx     Create Trip form
         trip/[id]/index.tsx  trip detail; day-by-day timeline in phase 3
         trip/[id]/edit.tsx
+        trip/[id]/item/new.tsx       add item to a day
+        trip/[id]/item/[itemId].tsx  edit, move to another day, delete
         trip/[id]/map.tsx
       share/[token].tsx  public read-only view (outside (app))
     api/                 Supabase queries, one file per table

@@ -8,6 +8,8 @@ export default function AppLayout() {
       <Stack.Screen name="trip/new" options={{ title: 'Create trip' }} />
       <Stack.Screen name="trip/[id]/index" options={{ title: 'Trip' }} />
       <Stack.Screen name="trip/[id]/edit" options={{ title: 'Edit trip' }} />
+      <Stack.Screen name="trip/[id]/item/new" options={{ title: 'Add to plan' }} />
+      <Stack.Screen name="trip/[id]/item/[itemId]" options={{ title: 'Edit plan item' }} />
     </Stack>
   );
 }

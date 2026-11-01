@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import type { TripInput } from '@/api/trips';
 import { Button } from '@/components/button';
 import { Input } from '@/components/input';
+import { errorMessage } from '@/lib/errors';
 import { parseTripForm, type TripFormErrors, type TripFormValues } from '@/lib/trip-form';
 
 type Props = {
@@ -38,7 +39,7 @@ export function TripForm({ initial, submitLabel, onSubmit }: Props) {
     try {
       await onSubmit(result.input);
     } catch (e) {
-      setSaveError(e instanceof Error ? e.message : 'Could not save the trip.');
+      setSaveError(errorMessage(e, 'Could not save the trip.'));
     } finally {
       setSaving(false);
     }

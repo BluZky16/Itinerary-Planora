@@ -10,7 +10,7 @@ const item = (id: string, day_id: string, position: number, cost: number | null 
 });
 
 const plan: TripPlan = {
-  id: 't', title: 'T', destination: null, start_date: '2026-12-01', end_date: '2026-12-02', budget: null, currency: null,
+  id: 't', title: 'T', destination: null, start_date: '2026-12-01', end_date: '2026-12-02', budget: null, currency: null, share_token: null,
   days: [
     { id: 'd1', date: '2026-12-01', items: [item('a', 'd1', 0, 10), item('b', 'd1', 1), item('c', 'd1', 2, 2.5)] },
     { id: 'd2', date: '2026-12-02', items: [item('x', 'd2', 0, 100)] },

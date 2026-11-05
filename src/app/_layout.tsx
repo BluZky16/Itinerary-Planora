@@ -1,10 +1,10 @@
 import '../global.css';
 import type { Session } from '@supabase/supabase-js';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 
-import { queryClient } from '@/lib/query';
+import { CACHE_MAX_AGE, CACHE_VERSION, dehydrateOptions, persister, queryClient } from '@/lib/query';
 import { supabase } from '@/lib/supabase';
 
 export default function RootLayout() {
@@ -15,7 +15,10 @@ export default function RootLayout() {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
     const { data } = supabase.auth.onAuthStateChange((_event, next) => {
       // Drop cached data so the next user on this device never sees the previous user's trips.
-      if (!next) queryClient.clear();
+      if (!next) {
+        queryClient.clear();
+        persister.removeClient(); // and the copy saved on the device
+      }
       setSession(next);
     });
     return () => data.subscription.unsubscribe();
@@ -24,8 +27,19 @@ export default function RootLayout() {
   if (session === undefined) return null;
 
   return (
-    <QueryClientProvider client={queryClient}>
+    // key + buster: a different user never gets the previous user's saved cache restored.
+    <PersistQueryClientProvider
+      key={session?.user.id ?? 'signed-out'}
+      client={queryClient}
+      persistOptions={{
+        persister,
+        maxAge: CACHE_MAX_AGE,
+        buster: `${CACHE_VERSION}:${session?.user.id ?? 'signed-out'}`,
+        dehydrateOptions,
+      }}>
       <Stack screenOptions={{ headerShown: false }}>
+        {/* Public: the read-only share link works signed in or out. */}
+        <Stack.Screen name="share/[token]" />
         <Stack.Protected guard={!!session}>
           <Stack.Screen name="(app)" />
         </Stack.Protected>
@@ -33,6 +47,6 @@ export default function RootLayout() {
           <Stack.Screen name="sign-in" />
         </Stack.Protected>
       </Stack>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }

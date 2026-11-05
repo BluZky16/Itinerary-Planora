@@ -3,6 +3,14 @@ import { supabase } from '@/lib/supabase';
 export const ITEM_TYPES = ['attraction', 'lodging', 'restaurant', 'transport', 'other'] as const;
 export type ItemType = (typeof ITEM_TYPES)[number];
 
+export const TYPE_LABELS: Record<ItemType, string> = {
+  attraction: 'Attraction',
+  lodging: 'Lodging',
+  restaurant: 'Restaurant',
+  transport: 'Transport',
+  other: 'Other',
+};
+
 export type Item = {
   id: string;
   day_id: string;

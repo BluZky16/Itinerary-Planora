@@ -36,7 +36,7 @@ Dashboard, My Itineraries, Explore Places, My Travel Map, Budget Planner, plus a
 - Every table has RLS on. Never ship a table without a policy. Test each policy with two different users.
 - Secrets never go in the repo. Use `.env` (git-ignored) and keep `.env.example` current. The Supabase anon key may be in the client only because RLS is on. Google API keys used for Places are called from an Edge Function, not from the app.
 - Store the Google `place_id` plus the user's own fields. Do not store other Google place data long-term (check Google's current terms).
-- After sign-out the root layout clears the TanStack Query cache. Keep it that way, so a second user on the same device never sees cached trips.
+- After sign-out the root layout clears the TanStack Query cache and the copy saved on the device (offline read). Keep it that way, so a second user on the same device never sees cached trips.
 - Days are created and removed by the `trips_sync_days` trigger from the trip dates; never insert days from the app. Reorder or move items only through the `move_item` database function, which renumbers positions.
 - Supabase errors are plain objects, not `Error`: show them with `errorMessage()` from `src/lib/errors.ts`.
 - Keep changes small. Build the smallest thing that does the job; v2 items in SPEC.md stay out of v1.

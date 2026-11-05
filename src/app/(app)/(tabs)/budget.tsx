@@ -2,9 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { FlatList, Pressable, Text, View } from 'react-native';
 
-import { ITEM_TYPES } from '@/api/items';
+import { ITEM_TYPES, TYPE_LABELS } from '@/api/items';
 import { listTripCosts, type TripCosts } from '@/api/trips';
-import { TYPE_LABELS } from '@/components/item-form';
 import { ScreenState } from '@/components/screen-state';
 import { costByType, formatCost, tripTotal } from '@/lib/plan';
 

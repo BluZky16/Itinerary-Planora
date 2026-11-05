@@ -1,3 +1,4 @@
+import { onlineManager } from '@tanstack/react-query';
 import { ActivityIndicator, Text, View } from 'react-native';
 
 import { Button } from '@/components/button';
@@ -11,8 +12,13 @@ export function ScreenState({ error, onRetry }: { error?: Error | null; onRetry?
           <Text className="text-center text-base text-error">{error.message}</Text>
           {onRetry ? <Button title="Try again" variant="ghost" onPress={onRetry} /> : null}
         </>
-      ) : (
+      ) : onlineManager.isOnline() ? (
         <ActivityIndicator color="#570df8" accessibilityLabel="Loading" />
+      ) : (
+        // The browser went offline and this screen was never saved: say so instead of spinning forever.
+        <Text className="text-center text-base text-base-content">
+          You are offline, and this has not been saved on this device yet.
+        </Text>
       )}
     </View>
   );

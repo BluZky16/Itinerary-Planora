@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { ITEM_TYPES, type ItemInput, type ItemType } from '@/api/items';
+import { ITEM_TYPES, TYPE_LABELS, type ItemInput } from '@/api/items';
 import { Button } from '@/components/button';
 import { Chips } from '@/components/chips';
 import { Input } from '@/components/input';
@@ -9,13 +9,6 @@ import { errorMessage } from '@/lib/errors';
 import { parseItemForm, type ItemFormErrors, type ItemFormValues } from '@/lib/item-form';
 import { formatTime } from '@/lib/plan';
 
-export const TYPE_LABELS: Record<ItemType, string> = {
-  attraction: 'Attraction',
-  lodging: 'Lodging',
-  restaurant: 'Restaurant',
-  transport: 'Transport',
-  other: 'Other',
-};
 const TYPE_OPTIONS = ITEM_TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t] }));
 
 type Props = {

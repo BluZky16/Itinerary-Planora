@@ -3,11 +3,11 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
-import { moveItem, type Item } from '@/api/items';
+import { moveItem, TYPE_LABELS, type Item } from '@/api/items';
 import { deleteTrip, getTripPlan, type Day, type TripPlan } from '@/api/trips';
 import { Button } from '@/components/button';
-import { TYPE_LABELS } from '@/components/item-form';
 import { ScreenState } from '@/components/screen-state';
+import { SharePanel } from '@/components/share-panel';
 import { dayTotal, formatCost, formatDay, formatTime, moveInPlan, tripTotal } from '@/lib/plan';
 import { errorMessage } from '@/lib/errors';
 import { queryClient } from '@/lib/query';
@@ -74,6 +74,7 @@ export default function TripDetail() {
         <DaySection key={day.id} tripId={id} day={day} number={n + 1} onMove={move.mutate} />
       ))}
 
+      <SharePanel tripId={id} token={t.share_token} />
       <Button title="Edit trip" onPress={() => router.push({ pathname: '/trip/[id]/edit', params: { id } })} />
       {deleteError ? <Text className="text-sm text-error">{deleteError}</Text> : null}
       <Button

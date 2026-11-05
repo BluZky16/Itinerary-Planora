@@ -9,11 +9,12 @@ export type Trip = {
   end_date: string;
   budget: number | null;
   currency: string | null; // 3-letter code; applies to the budget and every item cost in the trip
+  share_token: string | null; // set while the read-only link is on
 };
 
-export type TripInput = Omit<Trip, 'id'>;
+export type TripInput = Omit<Trip, 'id' | 'share_token'>;
 
-const COLUMNS = 'id, title, destination, start_date, end_date, budget, currency';
+const COLUMNS = 'id, title, destination, start_date, end_date, budget, currency, share_token';
 
 // Every trip with just the item types and costs, for the Budget and Dashboard screens.
 export type TripCosts = Trip & { days: { items: { type: ItemType; cost: number | null }[] }[] };
@@ -66,5 +67,18 @@ export async function updateTrip(id: string, input: TripInput): Promise<Trip> {
 
 export async function deleteTrip(id: string): Promise<void> {
   const { error } = await supabase.from('trips').delete().eq('id', id);
+  if (error) throw error;
+}
+
+// Turns the share link on (the database makes the token) and returns it.
+export async function shareTrip(id: string): Promise<string> {
+  const { data, error } = await supabase.rpc('share_trip', { p_trip_id: id });
+  if (error) throw error;
+  return data as string;
+}
+
+// Revoking clears the token, so the old link stops working at once.
+export async function unshareTrip(id: string): Promise<void> {
+  const { error } = await supabase.from('trips').update({ share_token: null }).eq('id', id);
   if (error) throw error;
 }

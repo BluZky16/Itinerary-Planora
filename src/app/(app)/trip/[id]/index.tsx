@@ -153,7 +153,7 @@ function ItemRow({ tripId, item, currency, onUp, onDown }: ItemProps) {
         className="flex-1 gap-1">
         <View className="flex-row items-center gap-2">
           {time ? <Text className="text-sm font-semibold text-base-content">{time}</Text> : null}
-          <Text className="rounded-full bg-base-200 px-2 text-xs text-base-content">{TYPE_LABELS[item.type]}</Text>
+          <Text className="rounded-full bg-base-300 px-2 text-xs text-base-content">{TYPE_LABELS[item.type]}</Text>
         </View>
         <Text className="text-base font-semibold text-base-content">{item.title}</Text>
         {where ? <Text className="text-sm text-base-content opacity-70">{where}</Text> : null}
@@ -178,7 +178,7 @@ function MoveButton({ label, symbol, onPress }: { label: string; symbol: string;
       accessibilityState={{ disabled: !onPress }}
       disabled={!onPress}
       onPress={onPress}
-      className={`h-11 w-11 items-center justify-center rounded-lg bg-base-200 ${onPress ? '' : 'opacity-30'}`}>
+      className={`h-11 w-11 items-center justify-center rounded-lg bg-base-300 ${onPress ? '' : 'opacity-30'}`}>
       <Text className="text-lg text-base-content">{symbol}</Text>
     </Pressable>
   );

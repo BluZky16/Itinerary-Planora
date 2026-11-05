@@ -9,7 +9,6 @@ const palette = {
   // Pastel "glass" look: sky-blue page, translucent white cards, pastel pink fills, lime highlights.
   light: {
     primary: '#be185d', // text, icons, focus ring: deep pink so it passes AA on the light cards
-    'primary-content': '#ffffff',
     accent: '#f6b6e3', // pastel pink fill (main buttons, selected chips, "visited")
     'accent-content': '#1e1b2e',
     lime: '#d9f26b', // "wishlist" highlight
@@ -26,7 +25,6 @@ const palette = {
   },
   dark: {
     primary: '#f9a8d4',
-    'primary-content': '#3b0a2a',
     accent: '#f9a8d4',
     'accent-content': '#2a0f22',
     lime: '#d9f26b',

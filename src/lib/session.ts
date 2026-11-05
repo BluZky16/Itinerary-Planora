@@ -14,5 +14,20 @@ export function useUser(): User | null {
   return user;
 }
 
+// One auth step at a time with a loading flag. A step returns an error message, or nothing on success.
+export function useAuthStep() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  async function run(step: () => Promise<string | void>) {
+    if (loading) return; // Enter can fire while a request is running
+    setLoading(true);
+    setError('');
+    const message = await step().catch((e: Error) => e.message);
+    setLoading(false);
+    if (message) setError(message);
+  }
+  return { loading, error, run, clearError: () => setError('') };
+}
+
 // Same minimum everywhere a password is set. Checked before any request, so a reset never half-finishes.
 export const passwordError = (password: string) => (password.length < 8 ? 'Use at least 8 characters.' : '');

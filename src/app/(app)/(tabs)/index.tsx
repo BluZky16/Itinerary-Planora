@@ -11,7 +11,6 @@ import { Button } from '@/components/button';
 import { ScreenState } from '@/components/screen-state';
 import { WorldMap } from '@/components/world-map';
 import {
-  costByType,
   formatCost,
   formatRange,
   localToday,
@@ -89,11 +88,12 @@ function Chip({ label }: { label: string }) {
 }
 
 function AccountCard({ email, trips }: { email: string; trips: TripCosts[] }) {
+  const colors = useColors();
   const totals = totalsByCurrency(trips);
   return (
     <View className={`min-h-56 justify-between gap-6 rounded-3xl p-5 lg:w-64 ${GRADIENTS[0]}`}>
       <View className="flex-row items-center gap-2">
-        <Ionicons name="person-outline" size={18} color="#1e1b2e" />
+        <Ionicons name="person-outline" size={18} color={colors['accent-content']} />
         <Text className="text-base text-accent-content">Account</Text>
       </View>
       <View className="gap-1">
@@ -189,7 +189,7 @@ function UpcomingCard({ trip }: { trip?: TripCosts }) {
       </View>
     );
   }
-  const types = Object.keys(costByType(trip)) as (keyof typeof TYPE_LABELS)[];
+  const types = [...new Set(trip.days.flatMap((d) => d.items.map((i) => i.type)))];
   const items = trip.days.reduce((n, d) => n + d.items.length, 0);
   return (
     <View className={`${CARD} lg:w-96`}>
@@ -221,9 +221,10 @@ function UpcomingCard({ trip }: { trip?: TripCosts }) {
 }
 
 function Tile({ gradient, icon, title }: { gradient: string; icon: IconName; title: string }) {
+  const colors = useColors();
   return (
     <View className={`flex-1 justify-between rounded-2xl p-3 ${gradient}`}>
-      <Ionicons name={icon} size={20} color="#1e1b2e" />
+      <Ionicons name={icon} size={20} color={colors['accent-content']} />
       <Text className="text-sm font-semibold text-accent-content">{title}</Text>
     </View>
   );
@@ -231,6 +232,7 @@ function Tile({ gradient, icon, title }: { gradient: string; icon: IconName; tit
 
 // The latest past trip as a big card, with the next ones peeking out behind it.
 function PreviousCard({ trips }: { trips: TripCosts[] }) {
+  const colors = useColors();
   const [first, ...rest] = trips;
   return (
     <View className={`${CARD} lg:w-96`}>
@@ -261,7 +263,7 @@ function PreviousCard({ trips }: { trips: TripCosts[] }) {
                 <Text className="text-sm text-accent-content">{formatRange(first.start_date, first.end_date)}</Text>
               </View>
               <View className="h-9 w-9 items-center justify-center rounded-full border border-accent-content">
-                <Ionicons name="arrow-up-outline" size={18} color="#1e1b2e" style={{ transform: [{ rotate: '45deg' }] }} />
+                <Ionicons name="arrow-up-outline" size={18} color={colors['accent-content']} style={{ transform: [{ rotate: '45deg' }] }} />
               </View>
             </View>
             {first.destination ? (

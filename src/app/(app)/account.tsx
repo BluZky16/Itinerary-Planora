@@ -5,7 +5,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { Button } from '@/components/button';
 import { Input } from '@/components/input';
 import { toast } from '@/components/toast';
-import { passwordError } from '@/lib/session';
+import { passwordError, useAuthStep } from '@/lib/session';
 import { supabase } from '@/lib/supabase';
 
 // Guests keep their trips by adding an email and password to the same (anonymous) user.
@@ -15,18 +15,8 @@ export default function SaveAccount() {
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
   const [codeSent, setCodeSent] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { loading, error, run } = useAuthStep();
   const [confirmLeave, setConfirmLeave] = useState(false);
-
-  async function run(step: () => Promise<string | void>) {
-    if (loading) return;
-    setLoading(true);
-    setError('');
-    const message = await step().catch((e: Error) => e.message);
-    setLoading(false);
-    if (message) setError(message);
-  }
 
   // Last step, once the email is on the account.
   async function setPasswordAndFinish() {

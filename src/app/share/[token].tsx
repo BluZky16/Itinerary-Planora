@@ -48,7 +48,7 @@ function Item({ item }: { item: SharedItem }) {
     <View className="gap-1 rounded-3xl border border-base-300 bg-base-100 p-3">
       <View className="flex-row items-center gap-2">
         {time ? <Text className="text-sm font-semibold text-base-content">{time}</Text> : null}
-        <Text className="rounded-full bg-base-200 px-2 text-xs text-base-content">{TYPE_LABELS[item.type]}</Text>
+        <Text className="rounded-full bg-base-300 px-2 text-xs text-base-content">{TYPE_LABELS[item.type]}</Text>
       </View>
       <Text className="text-base font-semibold text-base-content">{item.title}</Text>
       {where ? <Text className="text-sm text-base-content opacity-70">{where}</Text> : null}

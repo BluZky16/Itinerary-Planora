@@ -15,8 +15,7 @@
   background-attachment: fixed;
 }
 
-/* Web: glass cards get a soft shadow and a light blur. */
+/* Web: glass cards get a soft shadow. (No backdrop blur: it costs a lot on long lists and the gradient behind shows no difference.) */
 .rounded-3xl.bg-base-100 {
   box-shadow: 0 8px 32px rgb(30 60 100 / 0.08);
-  backdrop-filter: blur(16px);
 }

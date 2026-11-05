@@ -3,7 +3,8 @@ import { Text, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { Input } from '@/components/input';
-import { passwordError } from '@/lib/session';
+import { toast } from '@/components/toast';
+import { passwordError, useAuthStep } from '@/lib/session';
 import { supabase } from '@/lib/supabase';
 
 type Mode = 'sign-in' | 'sign-up' | 'reset';
@@ -22,25 +23,16 @@ export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { loading, error, run, clearError } = useAuthStep();
 
   const switchTo = (next: Mode) => {
     setMode(next);
     setCodeFor(null);
     setCode('');
-    setError('');
+    clearError();
   };
 
-  // Runs one auth step; on success onAuthStateChange in the root layout swaps to the app.
-  async function run(step: () => Promise<string | void>) {
-    if (loading) return; // Enter can fire while a request is running
-    setLoading(true);
-    setError('');
-    const message = await step().catch((e: Error) => e.message);
-    setLoading(false);
-    if (message) setError(message);
-  }
+  // On success of any step, onAuthStateChange in the root layout swaps to the app.
 
   const submit = () =>
     run(async () => {
@@ -68,8 +60,12 @@ export default function SignIn() {
       if (codeFor === 'recovery' && passwordError(password)) return passwordError(password);
       const { error } = await supabase.auth.verifyOtp({ email: addr, token: code.trim(), type: codeFor ?? 'signup' });
       if (error) return error.message;
-      // The recovery code signs the user in; set the new password straight away.
-      if (codeFor === 'recovery') return (await supabase.auth.updateUser({ password })).error?.message;
+      // The recovery code signs the user in (this screen closes); set the new password straight away.
+      if (codeFor === 'recovery') {
+        const set = await supabase.auth.updateUser({ password });
+        if (set.error) toast(`Your password was not changed: ${set.error.message}`); // the screen is gone by now
+        return set.error?.message;
+      }
     });
 
   const guest = () =>

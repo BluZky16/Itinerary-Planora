@@ -10,7 +10,6 @@ module.exports = {
       // DaisyUI-style semantic color tokens; values per light/dark scheme live in src/lib/theme.ts.
       colors: {
         primary: 'var(--primary)',
-        'primary-content': 'var(--primary-content)',
         accent: 'var(--accent)',
         'accent-content': 'var(--accent-content)',
         lime: 'var(--lime)',

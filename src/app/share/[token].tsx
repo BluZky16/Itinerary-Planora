@@ -18,8 +18,8 @@ export default function SharedTrip() {
 
   return (
     <ScrollView className="flex-1 bg-base-200" contentContainerClassName="mx-auto w-full max-w-xl gap-4 p-4">
-      <View className="gap-1 rounded-2xl bg-base-100 p-4">
-        <Text accessibilityRole="header" className="text-2xl font-bold text-base-content">{t.title}</Text>
+      <View className="gap-1 rounded-3xl border border-base-300 bg-base-100 p-4">
+        <Text accessibilityRole="header" className="font-display text-3xl text-primary">{t.title}</Text>
         {t.destination ? <Text className="text-base text-base-content">{t.destination}</Text> : null}
         <Text className="text-sm text-base-content opacity-70">
           {formatRange(t.start_date, t.end_date)}
@@ -45,7 +45,7 @@ function Item({ item }: { item: SharedItem }) {
   const where =
     item.type === 'transport' ? [item.from_place, item.to_place].filter(Boolean).join(' → ') : item.place_name;
   return (
-    <View className="gap-1 rounded-2xl bg-base-100 p-3">
+    <View className="gap-1 rounded-3xl border border-base-300 bg-base-100 p-3">
       <View className="flex-row items-center gap-2">
         {time ? <Text className="text-sm font-semibold text-base-content">{time}</Text> : null}
         <Text className="rounded-full bg-base-200 px-2 text-xs text-base-content">{TYPE_LABELS[item.type]}</Text>

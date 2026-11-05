@@ -6,24 +6,35 @@ import { vars } from 'nativewind';
 // props that need a plain color string (spinners, placeholders, navigation) read them from useColors().
 // Text colors meet WCAG AA (4.5:1) on base-100 and base-200, also at the opacity-70 used for muted text.
 const palette = {
+  // Pastel "glass" look: sky-blue page, translucent white cards, pastel pink fills, lime highlights.
   light: {
-    primary: '#570df8',
+    primary: '#be185d', // text, icons, focus ring: deep pink so it passes AA on the light cards
     'primary-content': '#ffffff',
-    'base-100': '#ffffff',
-    'base-200': '#f2f2f2',
-    'base-300': '#e5e6e6',
-    'base-content': '#1f2937',
-    muted: '#9ca3af',
+    accent: '#f6b6e3', // pastel pink fill (main buttons, selected chips, "visited")
+    'accent-content': '#1e1b2e',
+    lime: '#d9f26b', // "wishlist" highlight
+    'lime-content': '#1e2a0a',
+    'base-100': 'rgba(255,255,255,0.62)', // glass card
+    'base-200': '#e6eff8', // page background (web paints a gradient over it, see global.css)
+    'base-300': '#d3e2f0', // card edges, input borders
+    'base-content': '#1e2a3a',
+    sky: '#c7ddf2', // second gradient stop
+    muted: '#7d8ca0',
     error: '#dc2626',
   },
   dark: {
-    primary: '#a78bfa',
-    'primary-content': '#1e1b4b',
-    'base-100': '#1d232a',
-    'base-200': '#111418', // page background; darker than base-100 so cards stand out
-    'base-300': '#2a323c',
-    'base-content': '#d1d5db',
-    muted: '#6b7280',
+    primary: '#f9a8d4',
+    'primary-content': '#3b0a2a',
+    accent: '#f9a8d4',
+    'accent-content': '#2a0f22',
+    lime: '#d9f26b',
+    'lime-content': '#1e2a0a',
+    'base-100': 'rgba(30,41,59,0.62)',
+    'base-200': '#0e1726',
+    'base-300': 'rgba(148,163,184,0.25)',
+    'base-content': '#dbe4ef',
+    sky: '#17304d',
+    muted: '#7c8aa0',
     error: '#f87171',
   },
 };

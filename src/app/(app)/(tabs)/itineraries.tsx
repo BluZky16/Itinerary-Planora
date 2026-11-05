@@ -30,8 +30,8 @@ export default function Itineraries() {
           <Pressable
             accessibilityRole="button"
             onPress={() => router.push({ pathname: '/trip/[id]', params: { id: item.id } })}
-            className="gap-1 rounded-2xl bg-base-100 p-4">
-            <Text className="text-lg font-semibold text-base-content">{item.title}</Text>
+            className="gap-1 rounded-3xl border border-base-300 bg-base-100 p-4">
+            <Text className="font-display text-2xl text-primary">{item.title}</Text>
             {item.destination ? <Text className="text-base text-base-content">{item.destination}</Text> : null}
             <Text className="text-sm text-base-content opacity-70">
               {formatRange(item.start_date, item.end_date)}

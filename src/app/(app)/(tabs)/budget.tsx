@@ -44,7 +44,7 @@ function TripBudget({ trip }: { trip: TripCosts }) {
     <Pressable
       accessibilityRole="button"
       onPress={() => router.push({ pathname: '/trip/[id]', params: { id: trip.id } })}
-      className="gap-2 rounded-2xl bg-base-100 p-4">
+      className="gap-2 rounded-3xl border border-base-300 bg-base-100 p-4">
       <Text className="text-lg font-semibold text-base-content">{trip.title}</Text>
       <Row label="Budget" value={trip.budget == null ? 'Not set (edit the trip)' : formatCost(trip.budget, trip.currency)} />
       <Row label="Planned" value={formatCost(planned, trip.currency)} />

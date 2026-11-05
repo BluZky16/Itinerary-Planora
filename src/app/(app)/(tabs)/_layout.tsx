@@ -19,12 +19,15 @@ const BRAND_HEIGHT = 64;
 // Bottom tabs on phones; on wide screens the same tabs become a sidebar on the left.
 export default function TabsLayout() {
   const wide = useWindowDimensions().width >= 768;
+  const colors = useColors();
   return (
     <Tabs
       screenOptions={{
         tabBarPosition: wide ? 'left' : 'bottom',
         tabBarVariant: wide ? 'material' : 'uikit',
         tabBarLabelPosition: wide ? 'beside-icon' : 'below-icon',
+        tabBarActiveBackgroundColor: wide ? colors.accent : undefined, // pastel pill on the active sidebar item
+        tabBarActiveTintColor: wide ? colors['accent-content'] : colors.primary,
         // The sidebar has no header slot: draw the app name in its background and push the tabs below it.
         ...(wide ? { tabBarBackground: () => <SidebarBrand />, tabBarStyle: { paddingTop: BRAND_HEIGHT } } : {}),
       }}>
@@ -51,7 +54,7 @@ function SidebarBrand() {
     <View className="flex-1 bg-base-100">
       <View style={{ height: BRAND_HEIGHT }} className="flex-row items-center gap-2 px-5">
         <Ionicons name="location" size={24} color={colors.primary} />
-        <Text className="text-xl font-bold text-base-content">Itinerary</Text>
+        <Text className="font-display text-2xl text-primary">Itinerary</Text>
       </View>
     </View>
   );

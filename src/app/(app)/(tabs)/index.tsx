@@ -35,7 +35,7 @@ export default function Dashboard() {
 
       {/* Side by side on wide screens */}
       <View className="gap-4 lg:flex-row">
-        <View className="gap-1 rounded-2xl bg-base-100 p-4 lg:flex-1">
+        <View className="gap-1 rounded-3xl border border-base-300 bg-base-100 p-4 lg:flex-1">
           <Text className="text-sm text-base-content opacity-70">Total planned cost</Text>
           {totals.length ? (
             totals.map((t) => (
@@ -48,14 +48,14 @@ export default function Dashboard() {
           )}
         </View>
 
-        <View className="gap-1 rounded-2xl bg-base-100 p-4 lg:flex-1">
+        <View className="gap-1 rounded-3xl border border-base-300 bg-base-100 p-4 lg:flex-1">
           <Text className="text-sm text-base-content opacity-70">Upcoming trip</Text>
           {next ? (
             <Pressable
               accessibilityRole="button"
               onPress={() => router.push({ pathname: '/trip/[id]', params: { id: next.id } })}
               className="gap-1">
-              <Text className="text-lg font-semibold text-base-content">{next.title}</Text>
+              <Text className="font-display text-2xl text-primary">{next.title}</Text>
               <Text className="text-sm text-base-content opacity-70">{formatRange(next.start_date, next.end_date)}</Text>
             </Pressable>
           ) : (
@@ -71,7 +71,7 @@ export default function Dashboard() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <View className="flex-1 gap-1 rounded-2xl bg-base-100 p-4">
+    <View className="flex-1 gap-1 rounded-3xl border border-base-300 bg-base-100 p-4">
       <Text className="text-sm text-base-content opacity-70">{label}</Text>
       <Text className="text-3xl font-bold text-base-content">{value}</Text>
     </View>

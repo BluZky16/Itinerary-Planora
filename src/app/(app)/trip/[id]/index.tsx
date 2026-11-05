@@ -74,8 +74,8 @@ export default function TripDetail() {
       <Head>
         <title>{`${t.title} · Itinerary`}</title>
       </Head>
-      <View className="gap-1 rounded-2xl bg-base-100 p-4">
-        <Text accessibilityRole="header" className="text-2xl font-bold text-base-content">{t.title}</Text>
+      <View className="gap-1 rounded-3xl border border-base-300 bg-base-100 p-4">
+        <Text accessibilityRole="header" className="font-display text-3xl text-primary">{t.title}</Text>
         {t.destination ? <Text className="text-base text-base-content">{t.destination}</Text> : null}
         <Text className="text-sm text-base-content opacity-70">
           {formatRange(t.start_date, t.end_date)}
@@ -145,7 +145,7 @@ function ItemRow({ tripId, item, currency, onUp, onDown }: ItemProps) {
     ? [item.from_place, item.to_place].filter(Boolean).join(' → ')
     : item.place_name;
   return (
-    <View className="flex-row items-stretch gap-2 rounded-2xl bg-base-100 p-3">
+    <View className="flex-row items-stretch gap-2 rounded-3xl border border-base-300 bg-base-100 p-3">
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={`Edit ${item.title}`}

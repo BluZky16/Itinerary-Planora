@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,4 +8,17 @@
 :focus-visible {
   outline: 2px solid var(--primary) !important;
   outline-offset: 2px;
+}
+
+/* Web: soft sky gradient behind every screen. Fixed, so stacked screens line up and stay opaque. */
+.bg-base-200 {
+  background-image: radial-gradient(ellipse at 20% 0%, var(--sky), transparent 60%),
+    linear-gradient(180deg, var(--base-200), var(--sky));
+  background-attachment: fixed;
+}
+
+/* Web: glass cards get a soft shadow and a light blur. */
+.rounded-3xl.bg-base-100 {
+  box-shadow: 0 8px 32px rgb(30 60 100 / 0.08);
+  backdrop-filter: blur(16px);
 }

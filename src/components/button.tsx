@@ -20,13 +20,13 @@ export function Button({ title, onPress, loading, variant = 'primary' }: Props) 
       accessibilityState={{ busy: !!loading, disabled: !!loading }}
       onPress={onPress}
       disabled={loading}
-      className={`min-h-12 items-center justify-center rounded-lg px-4 ${
-        primary ? 'bg-primary' : 'bg-transparent'
+      className={`min-h-12 items-center justify-center rounded-full px-5 ${
+        primary ? 'bg-accent' : 'bg-transparent'
       } ${loading ? 'opacity-60' : ''}`}>
       {loading ? (
-        <ActivityIndicator color={primary ? colors['primary-content'] : danger ? colors.error : colors.primary} />
+        <ActivityIndicator color={primary ? colors['accent-content'] : danger ? colors.error : colors.primary} />
       ) : (
-        <Text className={`text-base font-semibold ${primary ? 'text-primary-content' : danger ? 'text-error' : 'text-primary'}`}>
+        <Text className={`text-base font-semibold ${primary ? 'text-accent-content' : danger ? 'text-error' : 'text-primary'}`}>
           {title}
         </Text>
       )}

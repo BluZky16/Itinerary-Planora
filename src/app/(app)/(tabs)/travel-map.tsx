@@ -59,7 +59,7 @@ export default function TravelMap() {
       }
       ListEmptyComponent={<Text className="py-8 text-center text-base text-base-content">No country matches.</Text>}
       renderItem={({ item: c }) => (
-        <View className="flex-row items-center justify-between gap-2 rounded-2xl bg-base-100 p-3">
+        <View className="flex-row items-center justify-between gap-2 rounded-3xl border border-base-300 bg-base-100 p-3">
           <Text className="flex-1 text-base text-base-content">{c.name}</Text>
           {(['visited', 'wishlist'] as const).map((s) => {
             const on = status.get(c.code) === s;
@@ -71,9 +71,9 @@ export default function TravelMap() {
                 accessibilityState={{ checked: on }}
                 onPress={() => mark.mutate({ code: c.code, status: on ? null : s })}
                 className={`min-h-10 justify-center rounded-full border px-3 ${
-                  on ? 'border-primary bg-primary' : 'border-base-300 bg-base-100'
+                  on ? (s === 'visited' ? 'border-accent bg-accent' : 'border-lime bg-lime') : 'border-base-300 bg-base-100'
                 }`}>
-                <Text className={`text-sm ${on ? 'text-primary-content' : 'text-base-content'}`}>
+                <Text className={`text-sm ${on ? (s === 'visited' ? 'text-accent-content' : 'text-lime-content') : 'text-base-content'}`}>
                   {s === 'visited' ? 'Visited' : 'Wishlist'}
                 </Text>
               </Pressable>

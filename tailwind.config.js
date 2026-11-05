@@ -11,12 +11,18 @@ module.exports = {
       colors: {
         primary: 'var(--primary)',
         'primary-content': 'var(--primary-content)',
+        accent: 'var(--accent)',
+        'accent-content': 'var(--accent-content)',
+        lime: 'var(--lime)',
+        'lime-content': 'var(--lime-content)',
         'base-100': 'var(--base-100)',
         'base-200': 'var(--base-200)',
         'base-300': 'var(--base-300)',
         'base-content': 'var(--base-content)',
         error: 'var(--error)',
       },
+      // Hand-drawn marker font for titles. Loaded on web only (global.css); phones fall back to the system font.
+      fontFamily: { display: ['"Permanent Marker"', 'cursive'] },
     },
   },
   plugins: [],

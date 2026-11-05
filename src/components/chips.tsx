@@ -23,9 +23,9 @@ export function Chips<T extends string>({ label, options, value, onChange }: Pro
               accessibilityState={{ selected }}
               onPress={() => onChange(o.value)}
               className={`min-h-10 justify-center rounded-full border px-4 ${
-                selected ? 'border-primary bg-primary' : 'border-base-300 bg-base-100'
+                selected ? 'border-accent bg-accent' : 'border-base-300 bg-base-100'
               }`}>
-              <Text className={selected ? 'text-primary-content' : 'text-base-content'}>{o.label}</Text>
+              <Text className={selected ? 'text-accent-content' : 'text-base-content'}>{o.label}</Text>
             </Pressable>
           );
         })}

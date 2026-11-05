@@ -28,7 +28,7 @@ visited, and share a read-only link to a trip. One Expo (React Native) codebase 
 
 | Area | What it does |
 |---|---|
-| **Accounts** | Email + password (sign-up and password reset are confirmed with a 6-digit emailed code). **Guest mode**: start instantly with no account, then save it later with an email and password to keep the trips. |
+| **Accounts** | Email + password (when email confirmation is on, sign-up is confirmed with a 6-digit emailed code; password reset always is). **Guest mode**: start instantly with no account, then save it later with an email and password to keep the trips. |
 | **Dashboard** | Card layout: account, a 6-month trip calendar, the next upcoming trip, previous trips, and a world map with travel days, countries visited and trips planned. |
 | **My Itineraries** | List, create, edit and delete trips (title, destination, dates, optional budget and currency). |
 | **Day-by-day plan** | Days are created from the trip dates. Items (attraction, lodging, restaurant, transport, other) have time, place, notes and cost. Reorder within a day and move between days. |
@@ -128,7 +128,8 @@ dialog in the editor; confirming is expected, because they run inside a transact
 
 In **Authentication > Sign In / Providers**:
 
-- **Email**: enabled, with **Confirm email** on.
+- **Email**: enabled. **Confirm email**: on for real users. For development it can be off: sign-up then signs in at
+  once with no email, and any address works (even a made-up one). The app handles both.
 - **Allow anonymous sign-ins**: on (guest mode). Consider turning on CAPTCHA (Cloudflare Turnstile), since anyone can
   create guest users. Supabase rate-limits anonymous sign-ins per IP.
 - **Minimum password length**: 8 (the app also asks for at least 8).

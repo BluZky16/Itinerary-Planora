@@ -9,7 +9,7 @@ import { passwordError } from '@/lib/session';
 import { supabase } from '@/lib/supabase';
 
 // Guests keep their trips by adding an email and password to the same (anonymous) user.
-// Supabase confirms the email first (a 6-digit code, "Change email address" template); the password comes after.
+// When Supabase confirms emails, a 6-digit code ("Change email address" template) comes first; the password comes after.
 export default function SaveAccount() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,11 +28,22 @@ export default function SaveAccount() {
     if (message) setError(message);
   }
 
+  // Last step, once the email is on the account.
+  async function setPasswordAndFinish() {
+    const set = await supabase.auth.updateUser({ password });
+    if (set.error) return set.error.message;
+    toast('Account saved');
+    router.back();
+  }
+
   const sendCode = () =>
     run(async () => {
       if (passwordError(password)) return passwordError(password);
-      const { error } = await supabase.auth.updateUser({ email: email.trim() });
+      const addr = email.trim();
+      const { data, error } = await supabase.auth.updateUser({ email: addr });
       if (error) return error.message;
+      // With "Confirm email" off in Supabase the email is applied at once: no code to wait for.
+      if (data.user.email?.toLowerCase() === addr.toLowerCase()) return setPasswordAndFinish();
       setCodeSent(true);
     });
 
@@ -40,10 +51,7 @@ export default function SaveAccount() {
     run(async () => {
       const { error } = await supabase.auth.verifyOtp({ email: email.trim(), token: code.trim(), type: 'email_change' });
       if (error) return error.message;
-      const set = await supabase.auth.updateUser({ password });
-      if (set.error) return set.error.message;
-      toast('Account saved');
-      router.back();
+      return setPasswordAndFinish();
     });
 
   return (

@@ -47,7 +47,7 @@ Bottom tabs on phone; on wide web screens the same menus show as a sidebar. Crea
 
 ### v2 (out of scope for v1)
 
-Collaborators with edit rights, expense split, a separate "actually paid" amount per item, a shaded world map for Travel Map, offline editing, file attachments (tickets, PDFs), packing list, weather, AI plan suggestions, ticket/email parsing with an LLM, hotel price/availability via booking APIs, PDF export, Google login (next up: web first with Supabase's Google provider; phones need redirect handling, likely `expo-auth-session`) / Sign in with Apple.
+Collaborators with edit rights, expense split, a separate "actually paid" amount per item, a shaded world map for Travel Map, offline editing, file attachments (tickets, PDFs), packing list, weather, an AI assistant that edits existing trips (the v1 assistant only creates new ones, see phase 8), ticket/email parsing with an LLM, hotel price/availability via booking APIs, PDF export, Google login (next up: web first with Supabase's Google provider; phones need redirect handling, likely `expo-auth-session`) / Sign in with Apple.
 
 ### Smaller-option notes (decided to include unless changed)
 
@@ -68,6 +68,7 @@ Collaborators with edit rights, expense split, a separate "actually paid" amount
 | Maps (mobile) | `react-native-maps` (Google provider) | |
 | Maps (web) | Google Maps JS API (or MapLibre) | Behind the same `TripMap` component |
 | Places | Google Places API (New) | Called from a Supabase Edge Function |
+| AI assistant | Gemini API, free tier | Called from the `chat` Edge Function. The model only proposes a trip plan; the app validates it (`src/lib/ai-plan.ts`) and saves it after the user confirms. Daily limits per user and app-wide in `use_ai_quota()` |
 | Dates | `date-fns` | |
 | Reorder | Move up/down buttons first; `react-native-reanimated` + gesture handler on mobile and `dnd-kit` on web later | |
 | Tests | Jest + React Native Testing Library; Playwright for web smoke tests; SQL tests for RLS | |
@@ -180,7 +181,8 @@ Each phase ends with a check and a `/ponytail:ponytail-review`.
 5. **Budget, Dashboard and Travel Map:** migration for `trips.budget`/`currency`, `country_marks` and dropping `items.currency`; Budget Planner screen; Travel Map country list; Dashboard stats and upcoming trip. RLS test extended for `country_marks`. *Done when:* a budget shows remaining and a type breakdown, countries can be marked, and the Dashboard numbers match the data.
 6. **Offline read and sharing:** cached trip readable offline; share link create/revoke; public page. *Done when:* airplane-mode read works and an incognito browser sees only the shared trip.
 7. **Polish and ship:** empty/loading/error states audit, dark mode, sidebar on wide web, icon and splash, accessibility pass, EAS builds, TestFlight / Play internal testing, web deploy.
-8. **v2 backlog:** see section 2.
+8. **AI assistant:** chat screen that proposes a trip (destination, dates, lodging, items, budget); the user reviews a preview and presses "Create this trip". `chat` Edge Function (Gemini free tier), `ai_usage` quota table, plan validator. Creates new trips only. *Done when:* a chat request makes a previewable plan, "Create" saves it with correct costs, and a hostile message only ever produces a preview.
+9. **v2 backlog:** see section 2.
 
 ## 8. Known risks
 

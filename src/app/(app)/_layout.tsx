@@ -21,6 +21,7 @@ export default function AppLayout() {
       })}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="account" options={{ title: 'Save your account' }} />
+      <Stack.Screen name="assistant" options={{ title: 'AI assistant' }} />
       <Stack.Screen name="trip/new" options={{ title: 'Create trip' }} />
       <Stack.Screen name="trip/[id]/index" options={{ title: 'Trip' }} />
       <Stack.Screen name="trip/[id]/edit" options={{ title: 'Edit trip' }} />

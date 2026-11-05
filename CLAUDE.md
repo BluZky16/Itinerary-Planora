@@ -12,6 +12,7 @@ Full details (stack, data model, features, phases) are in [SPEC.md](SPEC.md). Re
 - Supabase: Postgres, Auth (email + password with emailed 6-digit codes, guest via anonymous sign-in), Row Level Security (RLS), Edge Functions
 - TanStack Query for server state
 - Google Places API (New) and Google Maps for places and map
+- Gemini API (free tier) behind the `chat` Edge Function for the AI trip assistant. The model only proposes; `src/lib/ai-plan.ts` validates and the app saves after the user confirms. Its code lives in `supabase/functions/chat/` (Deno, excluded from `tsc`) and is deployed by pasting it into the Supabase dashboard
 - EAS for mobile builds, web hosted separately
 
 ## App menus

@@ -19,7 +19,10 @@ export default function Itineraries() {
         keyExtractor={(t) => t.id}
         contentContainerClassName="mx-auto w-full max-w-xl gap-3 p-4"
         ListHeaderComponent={
-          <Button title="Create trip" onPress={() => router.push('/trip/new')} />
+          <View className="gap-1">
+            <Button title="Create trip" onPress={() => router.push('/trip/new')} />
+            <Button title="Plan with the AI assistant" variant="ghost" onPress={() => router.push('/assistant')} />
+          </View>
         }
         ListEmptyComponent={
           <Text className="py-8 text-center text-base text-base-content">

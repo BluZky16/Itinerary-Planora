@@ -2,6 +2,7 @@ import '../global.css';
 import type { Session } from '@supabase/supabase-js';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { Stack, ThemeProvider } from 'expo-router';
+import Head from 'expo-router/head';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { useColorScheme, View } from 'react-native';
@@ -34,6 +35,10 @@ export default function RootLayout() {
 
   return (
     <View style={themeVars(colors)} className="flex-1 bg-base-200">
+      <Head>
+        {/* Web only: the marker font for titles (font-display). Metro drops remote @import in CSS. */}
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" />
+      </Head>
       <ThemeProvider value={navTheme(colors, dark)}>
         <StatusBar style="auto" />
         <Routes session={session} />

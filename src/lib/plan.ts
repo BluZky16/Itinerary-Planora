@@ -37,6 +37,14 @@ export function totalsByCurrency(trips: TripCosts[]): { currency: string | null;
 export const upcomingTrip = <T extends Pick<Trip, 'start_date'>>(trips: T[], today: string): T | undefined =>
   trips.find((t) => t.start_date >= today);
 
+// Days a trip covers, both ends included. Date.parse reads YYYY-MM-DD as UTC, so no DST shift.
+export const tripDays = (t: Pick<Trip, 'start_date' | 'end_date'>) =>
+  Math.round((Date.parse(t.end_date) - Date.parse(t.start_date)) / 86_400_000) + 1;
+
+// Months counted from year 0, so "2026-12-24" and "2027-01-02" are one apart.
+export const monthIndex = (iso: string) => Number(iso.slice(0, 4)) * 12 + Number(iso.slice(5, 7)) - 1;
+export const monthName = (index: number) => MONTHS[index % 12];
+
 // Device-local calendar date as YYYY-MM-DD (a trip's dates are local, not UTC).
 export function localToday(now = new Date()): string {
   const pad = (n: number) => String(n).padStart(2, '0');

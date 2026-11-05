@@ -20,9 +20,12 @@ module.exports = {
         'base-300': 'var(--base-300)',
         'base-content': 'var(--base-content)',
         error: 'var(--error)',
+        sky: 'var(--sky)',
+        tint: 'var(--tint)',
+        surface: 'var(--surface)',
       },
-      // Hand-drawn marker font for titles. Loaded on web only (global.css); phones fall back to the system font.
-      fontFamily: { display: ['"Permanent Marker"', 'cursive'] },
+      // Hand-drawn marker font for titles. Loaded on web only (root layout <Head>); phones fall back to the system font.
+      fontFamily: { display: ['"Permanent Marker"', 'sans-serif'] },
     },
   },
   plugins: [],

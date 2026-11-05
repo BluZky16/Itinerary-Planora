@@ -2,7 +2,7 @@
 import type { Item } from '@/api/items';
 import type { TripPlan } from '@/api/trips';
 
-import { costByType, dayTotal, formatCost, formatDay, formatRange, localToday, moveInPlan, totalsByCurrency, tripTotal, upcomingTrip } from './plan';
+import { costByType, dayTotal, formatCost, formatDay, formatRange, localToday, monthIndex, monthName, moveInPlan, totalsByCurrency, tripDays, tripTotal, upcomingTrip } from './plan';
 
 const item = (id: string, day_id: string, position: number, cost: number | null = null): Item => ({
   id, day_id, position, cost, type: 'other', title: id,
@@ -85,4 +85,15 @@ test('tripTotal rounds to cents so a matching budget leaves exactly 0 remaining'
   const p: TripPlan = { ...plan, days: [{ id: 'd', date: 'x', items: [item('a', 'd', 0, 0.1), item('b', 'd', 1, 0.2)] }] };
   expect(tripTotal(p)).toBe(0.3);
   expect(0.3 - tripTotal(p)).toBe(0);
+});
+
+test('tripDays counts both ends, across months and DST changes', () => {
+  expect(tripDays({ start_date: '2026-12-01', end_date: '2026-12-03' })).toBe(3);
+  expect(tripDays({ start_date: '2026-03-28', end_date: '2026-04-02' })).toBe(6);
+  expect(tripDays({ start_date: '2026-12-01', end_date: '2026-12-01' })).toBe(1);
+});
+
+test('monthIndex is continuous across years', () => {
+  expect(monthIndex('2027-01-02') - monthIndex('2026-12-24')).toBe(1);
+  expect(monthName(monthIndex('2026-05-10'))).toBe('May');
 });

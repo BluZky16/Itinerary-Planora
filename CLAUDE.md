@@ -16,7 +16,7 @@ Full details (stack, data model, features, phases) are in [SPEC.md](SPEC.md). Re
 
 ## App menus
 
-Dashboard, My Itineraries, Explore Places, My Travel Map, Budget Planner, plus a Create Trip form (a button on My Itineraries). Bottom tabs on phone, sidebar on wide web. Which phase builds each is in SPEC.md section 2 and 7.
+Dashboard, My Itineraries, Explore Places, My Travel Map, Budget Planner, plus a Create Trip form (a button on My Itineraries). Bottom tabs on phone and tablet, a top bar with pill tabs on wide web (>= 1024 px). Which phase builds each is in SPEC.md section 2 and 7.
 
 ## Commands
 

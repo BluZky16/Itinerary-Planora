@@ -19,6 +19,8 @@ const palette = {
     'base-300': '#d3e2f0', // card edges, input borders
     'base-content': '#1e2a3a',
     sky: '#c7ddf2', // second gradient stop
+    tint: '#c7ddf2', // light end of the photo-placeholder gradients (dark text sits on them)
+    surface: '#ffffff', // active tab pill
     muted: '#7d8ca0',
     error: '#dc2626',
   },
@@ -34,6 +36,8 @@ const palette = {
     'base-300': 'rgba(148,163,184,0.25)',
     'base-content': '#dbe4ef',
     sky: '#17304d',
+    tint: '#c4b5fd',
+    surface: '#2b3a55',
     muted: '#7c8aa0',
     error: '#f87171',
   },

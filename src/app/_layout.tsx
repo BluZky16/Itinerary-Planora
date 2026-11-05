@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { useColorScheme, View } from 'react-native';
 
+import { Toaster } from '@/components/toast';
 import { CACHE_MAX_AGE, CACHE_VERSION, dehydrateOptions, persister, queryClient } from '@/lib/query';
 import { supabase } from '@/lib/supabase';
 import { navTheme, themeVars, useColors } from '@/lib/theme';
@@ -37,6 +38,7 @@ export default function RootLayout() {
         <StatusBar style="auto" />
         <Routes session={session} />
       </ThemeProvider>
+      <Toaster />
     </View>
   );
 }

@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Web: keyboard focus ring in the brand colour (--primary is set per theme in the root layout). */
+:focus-visible {
+  outline: 2px solid var(--primary) !important;
+  outline-offset: 2px;
+}

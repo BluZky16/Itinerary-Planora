@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { FlatList, Pressable, Text, View } from 'react-native';
 
 import { listCountryMarks, setCountryMark, type CountryMark, type MarkStatus } from '@/api/country-marks';
+import { Chips } from '@/components/chips';
 import { Input } from '@/components/input';
 import { ScreenState } from '@/components/screen-state';
 import { queryClient } from '@/lib/query';
@@ -10,8 +11,16 @@ import { filterCountries } from '@/lib/countries';
 
 const KEY = ['country-marks'];
 
+const SHOW = [
+  { value: 'all', label: 'All' },
+  { value: 'visited', label: 'Visited' },
+  { value: 'wishlist', label: 'Wishlist' },
+] as const;
+
 export default function TravelMap() {
   const [search, setSearch] = useState('');
+  // A filter rather than sorting marked countries to the top: sorting would move a row away as you tap it.
+  const [show, setShow] = useState<(typeof SHOW)[number]['value']>('all');
   const marks = useQuery({ queryKey: KEY, queryFn: listCountryMarks });
 
   // Instant toggle: update the cache first, then reload from the database either way.
@@ -34,7 +43,7 @@ export default function TravelMap() {
   return (
     <FlatList
       className="flex-1 bg-base-200"
-      data={filterCountries(search)}
+      data={filterCountries(search).filter((c) => show === 'all' || status.get(c.code) === show)}
       keyExtractor={(c) => c.code}
       keyboardShouldPersistTaps="handled"
       contentContainerClassName="mx-auto w-full max-w-xl gap-2 p-4"
@@ -44,6 +53,7 @@ export default function TravelMap() {
             {visited} visited · {marks.data.length - visited} on wishlist
           </Text>
           <Input label="Search countries" value={search} onChangeText={setSearch} placeholder="Japan" />
+          <Chips label="Show" options={SHOW} value={show} onChange={setShow} />
           {mark.error ? <Text className="text-sm text-error">Could not save: {mark.error.message}</Text> : null}
         </View>
       }

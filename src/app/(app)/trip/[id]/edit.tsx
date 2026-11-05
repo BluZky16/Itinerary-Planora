@@ -4,6 +4,7 @@ import { ScrollView } from 'react-native';
 
 import { getTrip, updateTrip, type TripInput } from '@/api/trips';
 import { ScreenState } from '@/components/screen-state';
+import { toast } from '@/components/toast';
 import { TripForm } from '@/components/trip-form';
 import { goBackOr } from '@/lib/nav';
 import { queryClient } from '@/lib/query';
@@ -18,6 +19,7 @@ export default function EditTrip() {
     await updateTrip(id, input);
     await queryClient.invalidateQueries({ queryKey: ['trips'] });
     goBackOr({ pathname: '/trip/[id]', params: { id } });
+    toast('Trip saved.');
   }
 
   return (

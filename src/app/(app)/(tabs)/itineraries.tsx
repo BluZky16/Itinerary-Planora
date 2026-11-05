@@ -5,6 +5,7 @@ import { FlatList, Pressable, Text, View } from 'react-native';
 import { listTrips } from '@/api/trips';
 import { Button } from '@/components/button';
 import { ScreenState } from '@/components/screen-state';
+import { formatRange } from '@/lib/plan';
 
 export default function Itineraries() {
   const trips = useQuery({ queryKey: ['trips'], queryFn: listTrips });
@@ -33,7 +34,7 @@ export default function Itineraries() {
             <Text className="text-lg font-semibold text-base-content">{item.title}</Text>
             {item.destination ? <Text className="text-base text-base-content">{item.destination}</Text> : null}
             <Text className="text-sm text-base-content opacity-70">
-              {item.start_date} to {item.end_date}
+              {formatRange(item.start_date, item.end_date)}
             </Text>
           </Pressable>
         )}

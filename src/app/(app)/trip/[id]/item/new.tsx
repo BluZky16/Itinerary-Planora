@@ -6,6 +6,7 @@ import { createItem, type ItemInput } from '@/api/items';
 import { getTripPlan } from '@/api/trips';
 import { ItemForm } from '@/components/item-form';
 import { ScreenState } from '@/components/screen-state';
+import { toast } from '@/components/toast';
 import { goBackOr } from '@/lib/nav';
 import { queryClient } from '@/lib/query';
 
@@ -21,6 +22,7 @@ export default function NewItem() {
     await createItem(dayId, day!.items.length, input); // new items go to the end of the day
     await queryClient.invalidateQueries({ queryKey: ['trips'] }); // also refreshes Budget and Dashboard costs
     goBackOr({ pathname: '/trip/[id]', params: { id } });
+    toast('Added to the plan.');
   }
 
   return (

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import { FlatList, Pressable, Text, View } from 'react-native';
+import { FlatList, Pressable, Text, useWindowDimensions, View } from 'react-native';
 
 import { ITEM_TYPES, TYPE_LABELS } from '@/api/items';
 import { listTripCosts, type TripCosts } from '@/api/trips';
@@ -9,21 +9,29 @@ import { costByType, formatCost, tripTotal } from '@/lib/plan';
 
 export default function Budget() {
   const trips = useQuery({ queryKey: ['trips', 'costs'], queryFn: listTripCosts });
+  const cols = useWindowDimensions().width >= 1024 ? 2 : 1; // same width as Tailwind's lg
 
   if (!trips.data) return <ScreenState error={trips.error} onRetry={() => trips.refetch()} />;
 
   return (
     <FlatList
+      key={cols} // FlatList cannot change numColumns on the fly
+      numColumns={cols}
       className="flex-1 bg-base-200"
       data={trips.data}
       keyExtractor={(t) => t.id}
-      contentContainerClassName="mx-auto w-full max-w-xl gap-3 p-4"
+      contentContainerClassName="mx-auto w-full max-w-xl gap-3 p-4 lg:max-w-4xl"
       ListEmptyComponent={
         <Text className="py-8 text-center text-base text-base-content">
           No trips yet. Create a trip, then add costs to its items.
         </Text>
       }
-      renderItem={({ item }) => <TripBudget trip={item} />}
+      // Two columns: each cell is half wide with the 12px gap split between neighbours, so a lone last card keeps the same width.
+      renderItem={({ item, index }) => (
+        <View className={cols > 1 ? `w-1/2 ${index % 2 ? 'pl-1.5' : 'pr-1.5'}` : ''}>
+          <TripBudget trip={item} />
+        </View>
+      )}
     />
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
 
 import { ITEM_TYPES, TYPE_LABELS, type ItemInput } from '@/api/items';
 import { Button } from '@/components/button';
@@ -41,9 +41,13 @@ export function ItemForm({ initial, days, submitLabel, onSubmit }: Props) {
     value: values[key],
     onChangeText: (text: string) => setValues((v) => ({ ...v, [key]: text })),
     error: errors[key],
+    // Web: Enter in a text field saves (multiline notes keep Enter for new lines). Not on phones, where
+    // return just closes the keyboard and would save a half-filled form.
+    ...(Platform.OS === 'web' ? { onSubmitEditing: submit } : {}),
   });
 
   async function submit() {
+    if (saving) return; // Enter can fire while a save is running: never create the item twice
     const result = parseItemForm(values);
     if ('errors' in result) return setErrors(result.errors);
     setErrors({});
@@ -73,7 +77,7 @@ export function ItemForm({ initial, days, submitLabel, onSubmit }: Props) {
           <Input label="To (optional)" placeholder="Bandung" {...field('to_place')} />
         </>
       ) : (
-        <Input label="Place (optional)" placeholder="Search comes in phase 4" {...field('place_name')} />
+        <Input label="Place (optional)" placeholder="Place name or address" {...field('place_name')} />
       )}
       <View className="flex-row gap-3">
         <View className="flex-1">

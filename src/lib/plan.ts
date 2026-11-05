@@ -52,9 +52,19 @@ export function formatDay(iso: string): string {
   return `${WEEKDAYS[d.getUTCDay()]} ${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`;
 }
 
+// "Tue 1 Dec to Thu 3 Dec"; the year is added when it is not this year, and to both ends when they differ.
+export function formatRange(start: string, end: string, thisYear = new Date().getFullYear()): string {
+  const [ys, ye] = [start.slice(0, 4), end.slice(0, 4)];
+  if (ys !== ye) return `${formatDay(start)} ${ys} to ${formatDay(end)} ${ye}`;
+  return `${formatDay(start)} to ${formatDay(end)}${ys === String(thisYear) ? '' : ` ${ys}`}`;
+}
+
 // Postgres returns "09:30:00"; show "09:30".
 export const formatTime = (t: string | null) => (t ? t.slice(0, 5) : '');
 
-// "1,500.5" or "USD 1,500.5" when the trip has a currency.
+// "USD 1,500.50" (cents always as two digits), "USD 300" (whole amounts stay whole), "300" with no currency.
 export const formatCost = (n: number, currency?: string | null) =>
-  `${currency ? `${currency} ` : ''}${n.toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
+  `${currency ? `${currency} ` : ''}${n.toLocaleString('en-US', {
+    minimumFractionDigits: Number.isInteger(n) ? 0 : 2,
+    maximumFractionDigits: 2,
+  })}`;

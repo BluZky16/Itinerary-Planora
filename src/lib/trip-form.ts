@@ -19,6 +19,11 @@ export function isIsoDate(s: string): boolean {
   return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === s;
 }
 
+// Catches typos like "UDS". Engines without the ISO list (Hermes on phones may lack it) accept any 3 letters.
+function knownCurrency(code: string): boolean {
+  return typeof Intl.supportedValuesOf !== 'function' || Intl.supportedValuesOf('currency').includes(code);
+}
+
 // Returns either errors to show, or the trimmed input to save.
 export function parseTripForm(v: TripFormValues): { errors: TripFormErrors } | { input: TripInput } {
   const title = v.title.trim();
@@ -41,6 +46,7 @@ export function parseTripForm(v: TripFormValues): { errors: TripFormErrors } | {
 
   const currency = v.currency.trim().toUpperCase();
   if (currency && !/^[A-Z]{3}$/.test(currency)) errors.currency = 'Use a 3-letter code, for example USD.';
+  else if (currency && !knownCurrency(currency)) errors.currency = `${currency} is not a currency code. Try USD, EUR or IDR.`;
 
   if (Object.keys(errors).length) return { errors };
   return {

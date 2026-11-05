@@ -6,11 +6,12 @@ type Props = {
   title: string;
   onPress: () => void;
   loading?: boolean;
-  variant?: 'primary' | 'ghost';
+  variant?: 'primary' | 'ghost' | 'danger'; // danger: ghost with red text, for delete
 };
 
 export function Button({ title, onPress, loading, variant = 'primary' }: Props) {
   const primary = variant === 'primary';
+  const danger = variant === 'danger';
   const colors = useColors();
   return (
     <Pressable
@@ -23,9 +24,9 @@ export function Button({ title, onPress, loading, variant = 'primary' }: Props) 
         primary ? 'bg-primary' : 'bg-transparent'
       } ${loading ? 'opacity-60' : ''}`}>
       {loading ? (
-        <ActivityIndicator color={primary ? colors['primary-content'] : colors.primary} />
+        <ActivityIndicator color={primary ? colors['primary-content'] : danger ? colors.error : colors.primary} />
       ) : (
-        <Text className={`text-base font-semibold ${primary ? 'text-primary-content' : 'text-primary'}`}>
+        <Text className={`text-base font-semibold ${primary ? 'text-primary-content' : danger ? 'text-error' : 'text-primary'}`}>
           {title}
         </Text>
       )}

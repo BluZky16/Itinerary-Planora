@@ -13,6 +13,7 @@ export default function SignIn() {
   const [error, setError] = useState('');
 
   async function sendCode() {
+    if (loading) return; // Enter can fire while a request is running
     setLoading(true);
     setError('');
     const { error } = await supabase.auth.signInWithOtp({ email: email.trim() });
@@ -22,6 +23,7 @@ export default function SignIn() {
   }
 
   async function verifyCode() {
+    if (loading) return;
     setLoading(true);
     setError('');
     const { error } = await supabase.auth.verifyOtp({
@@ -50,6 +52,7 @@ export default function SignIn() {
               onChangeText={setCode}
               keyboardType="number-pad"
               autoComplete="one-time-code"
+              onSubmitEditing={verifyCode}
               error={error}
             />
             <Button title="Sign in" onPress={verifyCode} loading={loading} />
@@ -72,6 +75,7 @@ export default function SignIn() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
+              onSubmitEditing={sendCode}
               error={error}
             />
             <Button title="Send code" onPress={sendCode} loading={loading} />

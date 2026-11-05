@@ -5,7 +5,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { TYPE_LABELS } from '@/api/items';
 import { getSharedTrip, type SharedItem } from '@/api/shared';
 import { ScreenState } from '@/components/screen-state';
-import { formatDay, formatTime } from '@/lib/plan';
+import { formatDay, formatRange, formatTime } from '@/lib/plan';
 
 // Public, read-only view of one trip. Lives outside (app), so no sign-in is needed.
 export default function SharedTrip() {
@@ -22,7 +22,7 @@ export default function SharedTrip() {
         <Text accessibilityRole="header" className="text-2xl font-bold text-base-content">{t.title}</Text>
         {t.destination ? <Text className="text-base text-base-content">{t.destination}</Text> : null}
         <Text className="text-sm text-base-content opacity-70">
-          {formatDay(t.start_date)} to {formatDay(t.end_date)}
+          {formatRange(t.start_date, t.end_date)}
         </Text>
       </View>
 

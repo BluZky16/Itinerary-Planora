@@ -20,7 +20,7 @@ const palette = {
     primary: '#a78bfa',
     'primary-content': '#1e1b4b',
     'base-100': '#1d232a',
-    'base-200': '#191e24',
+    'base-200': '#111418', // page background; darker than base-100 so cards stand out
     'base-300': '#2a323c',
     'base-content': '#d1d5db',
     muted: '#6b7280',

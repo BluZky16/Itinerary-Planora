@@ -8,6 +8,7 @@ import { getTripPlan } from '@/api/trips';
 import { Button } from '@/components/button';
 import { ItemForm } from '@/components/item-form';
 import { ScreenState } from '@/components/screen-state';
+import { toast } from '@/components/toast';
 import { errorMessage } from '@/lib/errors';
 import { goBackOr } from '@/lib/nav';
 import { formatDay } from '@/lib/plan';
@@ -26,16 +27,17 @@ export default function EditItem() {
     return <ScreenState error={error} onRetry={() => (item.error ? item.refetch() : plan.refetch())} />;
   }
   const days = plan.data.days;
-  const done = async () => {
+  const done = async (message: string) => {
     await queryClient.invalidateQueries({ queryKey: ['trips'] }); // also refreshes Budget and Dashboard costs
     goBackOr({ pathname: '/trip/[id]', params: { id } });
+    toast(message);
   };
 
   async function save(input: ItemInput, dayId?: string) {
     await updateItem(itemId, input);
     const target = days.find((d) => d.id === dayId);
     if (target && target.id !== item.data!.day_id) await moveItem(itemId, target.id, target.items.length);
-    await done();
+    await done('Changes saved.');
   }
 
   async function remove() {
@@ -45,7 +47,7 @@ export default function EditItem() {
     try {
       await deleteItem(itemId);
       queryClient.removeQueries({ queryKey: ['trips', id, 'items', itemId] });
-      await done();
+      await done('Item deleted.');
     } catch (e) {
       setDeleteError(errorMessage(e, 'Could not delete.'));
       setDeleting(false);
@@ -66,8 +68,8 @@ export default function EditItem() {
       <View className="gap-2">
         {deleteError ? <Text className="text-sm text-error">{deleteError}</Text> : null}
         <Button
-          title={confirming ? 'Tap again to delete' : 'Delete'}
-          variant="ghost"
+          title={confirming ? 'Confirm: delete this item' : 'Delete'}
+          variant="danger"
           loading={deleting}
           onPress={remove}
         />

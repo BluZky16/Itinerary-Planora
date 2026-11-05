@@ -2,7 +2,7 @@
 import type { Item } from '@/api/items';
 import type { TripPlan } from '@/api/trips';
 
-import { costByType, dayTotal, formatCost, formatDay, localToday, moveInPlan, totalsByCurrency, tripTotal, upcomingTrip } from './plan';
+import { costByType, dayTotal, formatCost, formatDay, formatRange, localToday, moveInPlan, totalsByCurrency, tripTotal, upcomingTrip } from './plan';
 
 const item = (id: string, day_id: string, position: number, cost: number | null = null): Item => ({
   id, day_id, position, cost, type: 'other', title: id,
@@ -69,8 +69,15 @@ test('localToday uses local calendar fields', () => {
   expect(localToday(new Date(2026, 10, 5, 23, 59))).toBe('2026-11-05');
 });
 
+test('formatRange adds the year only when it is not this year', () => {
+  expect(formatRange('2026-12-01', '2026-12-03', 2026)).toBe('Tue 1 Dec to Thu 3 Dec');
+  expect(formatRange('2027-01-04', '2027-01-05', 2026)).toBe('Mon 4 Jan to Tue 5 Jan 2027');
+  expect(formatRange('2026-12-30', '2027-01-02', 2026)).toBe('Wed 30 Dec 2026 to Sat 2 Jan 2027');
+});
+
 test('formatCost adds the currency when there is one', () => {
-  expect(formatCost(1500.5, 'USD')).toBe('USD 1,500.5');
+  expect(formatCost(1500.5, 'USD')).toBe('USD 1,500.50');
+  expect(formatCost(300, 'USD')).toBe('USD 300');
   expect(formatCost(10)).toBe('10');
 });
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
 
 import type { TripInput } from '@/api/trips';
 import { Button } from '@/components/button';
@@ -31,9 +31,13 @@ export function TripForm({ initial, submitLabel, onSubmit }: Props) {
     value: values[key],
     onChangeText: (text: string) => setValues((v) => ({ ...v, [key]: text })),
     error: errors[key],
+    // Web: Enter in a text field saves. Not on phones, where return just closes the keyboard
+    // and would save a half-filled form.
+    ...(Platform.OS === 'web' ? { onSubmitEditing: submit } : {}),
   });
 
   async function submit() {
+    if (saving) return; // Enter can fire while a save is running: never create the trip twice
     const result = parseTripForm(values);
     if ('errors' in result) return setErrors(result.errors);
     setErrors({});

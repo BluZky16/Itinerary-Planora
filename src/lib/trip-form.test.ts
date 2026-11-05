@@ -42,4 +42,6 @@ test('budget and currency are optional, parsed and validated', () => {
   expect(parseTripForm({ ...valid, budget: '-1' })).toHaveProperty('errors.budget');
   expect(parseTripForm({ ...valid, budget: 'abc' })).toHaveProperty('errors.budget');
   expect(parseTripForm({ ...valid, currency: 'US' })).toHaveProperty('errors.currency');
+  expect(parseTripForm({ ...valid, currency: 'uds' })).toHaveProperty('errors.currency', 'UDS is not a currency code. Try USD, EUR or IDR.');
+  expect(parseTripForm({ ...valid, currency: 'idr' })).toHaveProperty('input.currency', 'IDR');
 });

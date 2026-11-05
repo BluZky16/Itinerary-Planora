@@ -1,13 +1,18 @@
 import '../global.css';
 import type { Session } from '@supabase/supabase-js';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { Stack } from 'expo-router';
+import { Stack, ThemeProvider } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
+import { useColorScheme, View } from 'react-native';
 
 import { CACHE_MAX_AGE, CACHE_VERSION, dehydrateOptions, persister, queryClient } from '@/lib/query';
 import { supabase } from '@/lib/supabase';
+import { navTheme, themeVars, useColors } from '@/lib/theme';
 
 export default function RootLayout() {
+  const colors = useColors();
+  const dark = useColorScheme() === 'dark';
   // undefined = still loading the stored session; null = signed out
   const [session, setSession] = useState<Session | null | undefined>(undefined);
 
@@ -26,6 +31,17 @@ export default function RootLayout() {
 
   if (session === undefined) return null;
 
+  return (
+    <View style={themeVars(colors)} className="flex-1 bg-base-200">
+      <ThemeProvider value={navTheme(colors, dark)}>
+        <StatusBar style="auto" />
+        <Routes session={session} />
+      </ThemeProvider>
+    </View>
+  );
+}
+
+function Routes({ session }: { session: Session | null }) {
   return (
     // key + buster: a different user never gets the previous user's saved cache restored.
     <PersistQueryClientProvider

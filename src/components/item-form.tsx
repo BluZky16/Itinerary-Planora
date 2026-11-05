@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { ITEM_TYPES, TYPE_LABELS, type ItemInput } from '@/api/items';
 import { Button } from '@/components/button';
 import { Chips } from '@/components/chips';
+import { DateField } from '@/components/date-field';
 import { Input } from '@/components/input';
 import { errorMessage } from '@/lib/errors';
 import { parseItemForm, type ItemFormErrors, type ItemFormValues } from '@/lib/item-form';
@@ -74,13 +75,12 @@ export function ItemForm({ initial, days, submitLabel, onSubmit }: Props) {
       ) : (
         <Input label="Place (optional)" placeholder="Search comes in phase 4" {...field('place_name')} />
       )}
-      {/* shortcut: times are typed as HH:MM; swap for a time picker in phase 7. */}
       <View className="flex-row gap-3">
         <View className="flex-1">
-          <Input label="Start (optional)" placeholder="HH:MM" {...field('start_time')} />
+          <DateField label="Start (optional)" mode="time" optional {...field('start_time')} />
         </View>
         <View className="flex-1">
-          <Input label="End (optional)" placeholder="HH:MM" {...field('end_time')} />
+          <DateField label="End (optional)" mode="time" optional {...field('end_time')} />
         </View>
       </View>
       <Input label="Cost (optional)" placeholder="150000" keyboardType="decimal-pad" {...field('cost')} />

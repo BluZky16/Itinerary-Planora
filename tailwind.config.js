@@ -2,19 +2,20 @@
 module.exports = {
   content: ['./src/**/*.{ts,tsx}'],
   presets: [require('nativewind/preset')],
-  // 'media' makes NativeWind throw on web when the page's color scheme is toggled; dark styles come in phase 7.
+  // 'media' makes NativeWind throw on web when the page's color scheme is toggled. Dark mode does not use
+  // dark: classes: the root layout swaps the CSS variables below (src/lib/theme.ts).
   darkMode: 'class',
   theme: {
     extend: {
-      // DaisyUI-style semantic color tokens
+      // DaisyUI-style semantic color tokens; values per light/dark scheme live in src/lib/theme.ts.
       colors: {
-        primary: '#570df8',
-        'primary-content': '#ffffff',
-        'base-100': '#ffffff',
-        'base-200': '#f2f2f2',
-        'base-300': '#e5e6e6',
-        'base-content': '#1f2937',
-        error: '#f87272',
+        primary: 'var(--primary)',
+        'primary-content': 'var(--primary-content)',
+        'base-100': 'var(--base-100)',
+        'base-200': 'var(--base-200)',
+        'base-300': 'var(--base-300)',
+        'base-content': 'var(--base-content)',
+        error: 'var(--error)',
       },
     },
   },

@@ -19,7 +19,7 @@ export default function SharedTrip() {
   return (
     <ScrollView className="flex-1 bg-base-200" contentContainerClassName="mx-auto w-full max-w-xl gap-4 p-4">
       <View className="gap-1 rounded-2xl bg-base-100 p-4">
-        <Text className="text-2xl font-bold text-base-content">{t.title}</Text>
+        <Text accessibilityRole="header" className="text-2xl font-bold text-base-content">{t.title}</Text>
         {t.destination ? <Text className="text-base text-base-content">{t.destination}</Text> : null}
         <Text className="text-sm text-base-content opacity-70">
           {formatDay(t.start_date)} to {formatDay(t.end_date)}
@@ -28,7 +28,7 @@ export default function SharedTrip() {
 
       {t.days.map((day, n) => (
         <View key={day.date} className="gap-2">
-          <Text className="px-1 text-lg font-bold text-base-content">
+          <Text accessibilityRole="header" className="px-1 text-lg font-bold text-base-content">
             Day {n + 1} · {formatDay(day.date)}
           </Text>
           {day.items.map((item, i) => (

@@ -27,8 +27,8 @@ export function parseTripForm(v: TripFormValues): { errors: TripFormErrors } | {
   const errors: TripFormErrors = {};
 
   if (!title) errors.title = 'Title is required.';
-  if (!isIsoDate(start)) errors.start_date = 'Use YYYY-MM-DD, for example 2026-12-24.';
-  if (!isIsoDate(end)) errors.end_date = 'Use YYYY-MM-DD, for example 2026-12-31.';
+  if (!isIsoDate(start)) errors.start_date = 'Pick a start date.';
+  if (!isIsoDate(end)) errors.end_date = 'Pick an end date.';
   // ISO dates compare correctly as strings.
   else if (isIsoDate(start) && end < start) errors.end_date = 'End date must be on or after the start date.';
   // Same cap as the trips_max_90_days check in the database: one row per day is created.

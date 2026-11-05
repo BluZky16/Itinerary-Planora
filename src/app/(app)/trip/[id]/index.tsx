@@ -60,7 +60,7 @@ export default function TripDetail() {
   return (
     <ScrollView className="flex-1 bg-base-200" contentContainerClassName="mx-auto w-full max-w-xl gap-4 p-4">
       <View className="gap-1 rounded-2xl bg-base-100 p-4">
-        <Text className="text-2xl font-bold text-base-content">{t.title}</Text>
+        <Text accessibilityRole="header" className="text-2xl font-bold text-base-content">{t.title}</Text>
         {t.destination ? <Text className="text-base text-base-content">{t.destination}</Text> : null}
         <Text className="text-sm text-base-content opacity-70">
           {formatDay(t.start_date)} to {formatDay(t.end_date)}
@@ -92,7 +92,7 @@ function DaySection({ tripId, day, number, onMove }: { tripId: string; day: Day;
   return (
     <View className="gap-2">
       <View className="flex-row items-baseline justify-between px-1">
-        <Text className="text-lg font-bold text-base-content">
+        <Text accessibilityRole="header" className="text-lg font-bold text-base-content">
           Day {number} · {formatDay(day.date)}
         </Text>
         {total ? <Text className="text-sm text-base-content opacity-70">{formatCost(total)}</Text> : null}
@@ -138,8 +138,8 @@ function ItemRow({ tripId, item, onUp, onDown }: { tripId: string; item: Item; o
         {item.cost != null ? <Text className="text-sm text-base-content">{formatCost(item.cost)}</Text> : null}
       </Pressable>
       <View className="justify-between">
-        <MoveButton label="Move up" symbol="↑" onPress={onUp} />
-        <MoveButton label="Move down" symbol="↓" onPress={onDown} />
+        <MoveButton label={`Move ${item.title} up`} symbol="↑" onPress={onUp} />
+        <MoveButton label={`Move ${item.title} down`} symbol="↓" onPress={onDown} />
       </View>
     </View>
   );

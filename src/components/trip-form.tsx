@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 
 import type { TripInput } from '@/api/trips';
 import { Button } from '@/components/button';
+import { DateField } from '@/components/date-field';
 import { Input } from '@/components/input';
 import { errorMessage } from '@/lib/errors';
 import { parseTripForm, type TripFormErrors, type TripFormValues } from '@/lib/trip-form';
@@ -51,9 +52,8 @@ export function TripForm({ initial, submitLabel, onSubmit }: Props) {
     <View className="gap-4">
       <Input label="Title" placeholder="Bali with friends" {...field('title')} />
       <Input label="Destination (optional)" placeholder="Bali, Indonesia" {...field('destination')} />
-      {/* shortcut: dates are typed as YYYY-MM-DD; swap for a date picker in phase 7. */}
-      <Input label="Start date" placeholder="YYYY-MM-DD" autoCapitalize="none" {...field('start_date')} />
-      <Input label="End date" placeholder="YYYY-MM-DD" autoCapitalize="none" {...field('end_date')} />
+      <DateField label="Start date" mode="date" {...field('start_date')} />
+      <DateField label="End date" mode="date" {...field('end_date')} />
       <Input label="Budget (optional)" placeholder="1500" keyboardType="decimal-pad" {...field('budget')} />
       <Input label="Currency (optional)" placeholder="USD" autoCapitalize="characters" maxLength={3} {...field('currency')} />
       {saveError ? <Text className="text-sm text-error">{saveError}</Text> : null}

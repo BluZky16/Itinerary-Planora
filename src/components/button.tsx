@@ -1,5 +1,7 @@
 import { ActivityIndicator, Pressable, Text } from 'react-native';
 
+import { useColors } from '@/lib/theme';
+
 type Props = {
   title: string;
   onPress: () => void;
@@ -9,16 +11,19 @@ type Props = {
 
 export function Button({ title, onPress, loading, variant = 'primary' }: Props) {
   const primary = variant === 'primary';
+  const colors = useColors();
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={title}
+      accessibilityState={{ busy: !!loading, disabled: !!loading }}
       onPress={onPress}
       disabled={loading}
       className={`min-h-12 items-center justify-center rounded-lg px-4 ${
         primary ? 'bg-primary' : 'bg-transparent'
       } ${loading ? 'opacity-60' : ''}`}>
       {loading ? (
-        <ActivityIndicator color={primary ? '#ffffff' : '#570df8'} />
+        <ActivityIndicator color={primary ? colors['primary-content'] : colors.primary} />
       ) : (
         <Text className={`text-base font-semibold ${primary ? 'text-primary-content' : 'text-primary'}`}>
           {title}

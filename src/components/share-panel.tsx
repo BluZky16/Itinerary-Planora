@@ -38,7 +38,7 @@ export function SharePanel({ tripId, token }: { tripId: string; token: string | 
 
   return (
     <View className="gap-2 rounded-2xl bg-base-100 p-4">
-      <Text className="text-lg font-bold text-base-content">Share</Text>
+      <Text accessibilityRole="header" className="text-lg font-bold text-base-content">Share</Text>
       {token ? (
         <>
           <Text className="text-sm text-base-content opacity-70">

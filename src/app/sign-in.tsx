@@ -37,7 +37,7 @@ export default function SignIn() {
   return (
     <View className="flex-1 items-center justify-center bg-base-200 p-4">
       <View className="w-full max-w-sm gap-4 rounded-2xl bg-base-100 p-6">
-        <Text className="text-2xl font-bold text-base-content">Itinerary</Text>
+        <Text accessibilityRole="header" className="text-2xl font-bold text-base-content">Itinerary</Text>
         <Text className="text-base text-base-content">
           {codeSent ? `Enter the code we emailed to ${email.trim()}.` : 'Sign in with your email.'}
         </Text>

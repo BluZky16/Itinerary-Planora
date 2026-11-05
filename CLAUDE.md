@@ -9,7 +9,7 @@ Full details (stack, data model, features, phases) are in [SPEC.md](SPEC.md). Re
 
 - Expo + TypeScript + Expo Router (one codebase: iOS, Android, web)
 - NativeWind (Tailwind classes that work on native) with our own DaisyUI-style components
-- Supabase: Postgres, Auth (emailed one-time code), Row Level Security (RLS), Edge Functions
+- Supabase: Postgres, Auth (email + password with emailed 6-digit codes, guest via anonymous sign-in), Row Level Security (RLS), Edge Functions
 - TanStack Query for server state
 - Google Places API (New) and Google Maps for places and map
 - EAS for mobile builds, web hosted separately

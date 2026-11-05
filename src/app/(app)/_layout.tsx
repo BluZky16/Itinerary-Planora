@@ -20,6 +20,7 @@ export default function AppLayout() {
           : () => <HeaderButton label="Back" icon="arrow-back" onPress={() => router.replace(upFrom(route.name, route.params))} />,
       })}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="account" options={{ title: 'Save your account' }} />
       <Stack.Screen name="trip/new" options={{ title: 'Create trip' }} />
       <Stack.Screen name="trip/[id]/index" options={{ title: 'Trip' }} />
       <Stack.Screen name="trip/[id]/edit" options={{ title: 'Edit trip' }} />

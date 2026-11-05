@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useQuery } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import { type ComponentProps, type ReactNode, useEffect, useState } from 'react';
+import { type ComponentProps, type ReactNode, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { listCountryMarks, type MarkStatus } from '@/api/country-marks';
@@ -22,7 +22,7 @@ import {
   tripTotal,
   upcomingTrip,
 } from '@/lib/plan';
-import { supabase } from '@/lib/supabase';
+import { useUser } from '@/lib/session';
 import { useColors } from '@/lib/theme';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
@@ -37,13 +37,9 @@ const GRADIENTS = [
 const openTrip = (id: string) => router.push({ pathname: '/trip/[id]', params: { id } });
 
 export default function Dashboard() {
-  const [email, setEmail] = useState('');
+  const user = useUser();
   const trips = useQuery({ queryKey: ['trips', 'costs'], queryFn: listTripCosts });
   const marks = useQuery({ queryKey: ['country-marks'], queryFn: listCountryMarks });
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setEmail(data.session?.user.email ?? ''));
-  }, []);
 
   if (!trips.data || !marks.data) {
     const failed = trips.error ? trips : marks;
@@ -57,7 +53,7 @@ export default function Dashboard() {
   return (
     <ScrollView className="flex-1 bg-base-200" contentContainerClassName="mx-auto w-full max-w-6xl gap-4 p-4 lg:px-6">
       <View className="gap-4 lg:flex-row">
-        <AccountCard email={email} trips={all} />
+        <AccountCard email={user?.is_anonymous ? '' : (user?.email ?? '')} trips={all} />
         <CalendarCard trips={all} today={today} />
         <UpcomingCard trip={upcomingTrip(all, today)} />
       </View>
@@ -102,9 +98,9 @@ function AccountCard({ email, trips }: { email: string; trips: TripCosts[] }) {
       </View>
       <View className="gap-1">
         <Text className="font-display text-3xl text-accent-content" numberOfLines={2}>
-          {email.split('@')[0]}
+          {email ? email.split('@')[0] : 'Guest'}
         </Text>
-        <Text className="text-sm text-accent-content">{email}</Text>
+        <Text className="text-sm text-accent-content">{email || 'Save your account to keep your trips.'}</Text>
         <Text className="text-base font-semibold text-accent-content">
           {totals.length ? totals.map((t) => formatCost(t.total, t.currency)).join(' · ') : 'Nothing'} planned
         </Text>

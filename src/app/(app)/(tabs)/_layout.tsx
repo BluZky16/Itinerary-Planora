@@ -5,6 +5,7 @@ import { Pressable, Text, useWindowDimensions, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { HeaderButton } from '@/components/header-button';
+import { useUser } from '@/lib/session';
 import { supabase } from '@/lib/supabase';
 import { useColors } from '@/lib/theme';
 
@@ -17,13 +18,16 @@ const TABS = [
 ] as const;
 
 const signOut = () => supabase.auth.signOut();
+const saveAccount = () => router.push('/account');
 
 // Bottom tabs on phones and tablets; on wide screens the same tabs become a top bar with pill tabs.
 export default function TabsLayout() {
   const wide = useWindowDimensions().width >= 1024; // logo + five tabs + the main button need this much room
+  // A guest who signs out loses their trips: offer "Save account" instead (it also has a way out).
+  const guest = !!useUser()?.is_anonymous;
   return (
     <Tabs
-      tabBar={wide ? (props) => <TopBar {...props} /> : undefined}
+      tabBar={wide ? (props) => <TopBar {...props} guest={guest} /> : undefined}
       screenOptions={{ tabBarPosition: wide ? 'top' : 'bottom', headerShown: !wide }}>
       {TABS.map(([name, title, icon]) => (
         <Tabs.Screen
@@ -33,7 +37,10 @@ export default function TabsLayout() {
             title,
             // color is the theme's tint, always a string here; the navigation type also allows numbers
             tabBarIcon: ({ color, size }) => <Ionicons name={icon} color={color as string} size={size} />,
-            headerRight: name === 'index' ? () => <HeaderButton label="Sign out" onPress={signOut} /> : undefined,
+            headerRight:
+              name === 'index'
+                ? () => <HeaderButton label={guest ? 'Save account' : 'Sign out'} onPress={guest ? saveAccount : signOut} />
+                : undefined,
           }}
         />
       ))}
@@ -43,7 +50,7 @@ export default function TabsLayout() {
 
 type TabBarProps = Parameters<NonNullable<ComponentProps<typeof Tabs>['tabBar']>>[0];
 
-function TopBar({ state, descriptors, navigateToTab }: TabBarProps) {
+function TopBar({ state, descriptors, navigateToTab, guest }: TabBarProps & { guest: boolean }) {
   const colors = useColors();
   return (
     <View className="flex-row items-center gap-4 bg-base-200 px-6 py-4">
@@ -72,8 +79,12 @@ function TopBar({ state, descriptors, navigateToTab }: TabBarProps) {
         </View>
       </View>
 
-      <View className="w-56 flex-row items-center justify-end gap-2">
-        <HeaderButton label="Sign out" icon="log-out-outline" onPress={signOut} />
+      <View className="min-w-56 flex-row items-center justify-end gap-2">
+        {guest ? (
+          <HeaderButton label="Save account" onPress={saveAccount} />
+        ) : (
+          <HeaderButton label="Sign out" icon="log-out-outline" onPress={signOut} />
+        )}
         <Button title="Plan a new trip" onPress={() => router.push('/trip/new')} />
       </View>
     </View>

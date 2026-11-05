@@ -3,48 +3,87 @@ import { Text, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { Input } from '@/components/input';
+import { passwordError } from '@/lib/session';
 import { supabase } from '@/lib/supabase';
 
+type Mode = 'sign-in' | 'sign-up' | 'reset';
+// After sign-up or "forgot password" Supabase emails a 6-digit code (the templates show {{ .Token }}).
+type CodeFor = 'signup' | 'recovery' | null;
+
+const INTRO: Record<Mode, string> = {
+  'sign-in': 'Sign in with your email and password.',
+  'sign-up': 'Create an account with your email and a password.',
+  reset: 'Enter your email and we will send you a code to set a new password.',
+};
+
 export default function SignIn() {
+  const [mode, setMode] = useState<Mode>('sign-in');
+  const [codeFor, setCodeFor] = useState<CodeFor>(null);
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
-  const [codeSent, setCodeSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  async function sendCode() {
+  const switchTo = (next: Mode) => {
+    setMode(next);
+    setCodeFor(null);
+    setCode('');
+    setError('');
+  };
+
+  // Runs one auth step; on success onAuthStateChange in the root layout swaps to the app.
+  async function run(step: () => Promise<string | void>) {
     if (loading) return; // Enter can fire while a request is running
     setLoading(true);
     setError('');
-    const { error } = await supabase.auth.signInWithOtp({ email: email.trim() });
+    const message = await step().catch((e: Error) => e.message);
     setLoading(false);
-    if (error) setError(error.message);
-    else setCodeSent(true);
+    if (message) setError(message);
   }
 
-  async function verifyCode() {
-    if (loading) return;
-    setLoading(true);
-    setError('');
-    const { error } = await supabase.auth.verifyOtp({
-      email: email.trim(),
-      token: code.trim(),
-      type: 'email',
+  const submit = () =>
+    run(async () => {
+      const addr = email.trim();
+      if (mode === 'sign-in') {
+        const { error } = await supabase.auth.signInWithPassword({ email: addr, password });
+        return error?.message;
+      }
+      if (mode === 'sign-up') {
+        if (passwordError(password)) return passwordError(password);
+        const { data, error } = await supabase.auth.signUp({ email: addr, password });
+        if (error) return error.message;
+        if (!data.session) setCodeFor('signup'); // email confirmation is on: wait for the code
+        return;
+      }
+      const { error } = await supabase.auth.resetPasswordForEmail(addr);
+      if (error) return error.message;
+      setPassword('');
+      setCodeFor('recovery');
     });
-    setLoading(false);
-    // On success onAuthStateChange in the root layout swaps to the home screen.
-    if (error) setError(error.message);
-  }
+
+  const verify = () =>
+    run(async () => {
+      const addr = email.trim();
+      if (codeFor === 'recovery' && passwordError(password)) return passwordError(password);
+      const { error } = await supabase.auth.verifyOtp({ email: addr, token: code.trim(), type: codeFor ?? 'signup' });
+      if (error) return error.message;
+      // The recovery code signs the user in; set the new password straight away.
+      if (codeFor === 'recovery') return (await supabase.auth.updateUser({ password })).error?.message;
+    });
+
+  const guest = () =>
+    run(async () => (await supabase.auth.signInAnonymously()).error?.message);
 
   return (
     <View className="flex-1 items-center justify-center bg-base-200 p-4">
       <View className="w-full max-w-sm gap-4 rounded-3xl border border-base-300 bg-base-100 p-6">
         <Text accessibilityRole="header" className="font-display text-3xl text-primary">Itinerary</Text>
         <Text className="text-base text-base-content">
-          {codeSent ? `Enter the code we emailed to ${email.trim()}.` : 'Sign in with your email.'}
+          {codeFor ? `Enter the code we emailed to ${email.trim()}.` : INTRO[mode]}
         </Text>
 
-        {codeSent ? (
+        {codeFor ? (
           <>
             <Input
               label="Code"
@@ -52,19 +91,22 @@ export default function SignIn() {
               onChangeText={setCode}
               keyboardType="number-pad"
               autoComplete="one-time-code"
-              onSubmitEditing={verifyCode}
-              error={error}
+              onSubmitEditing={verify}
+              error={codeFor === 'signup' ? error : undefined}
             />
-            <Button title="Sign in" onPress={verifyCode} loading={loading} />
-            <Button
-              title="Use a different email"
-              variant="ghost"
-              onPress={() => {
-                setCodeSent(false);
-                setCode('');
-                setError('');
-              }}
-            />
+            {codeFor === 'recovery' ? (
+              <Input
+                label="New password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                autoComplete="new-password"
+                onSubmitEditing={verify}
+                error={error}
+              />
+            ) : null}
+            <Button title={codeFor === 'recovery' ? 'Set password and sign in' : 'Confirm and sign in'} onPress={verify} loading={loading} />
+            <Button title="Back" variant="ghost" onPress={() => switchTo(mode)} />
           </>
         ) : (
           <>
@@ -75,10 +117,35 @@ export default function SignIn() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
-              onSubmitEditing={sendCode}
-              error={error}
+              onSubmitEditing={submit}
+              error={mode === 'reset' ? error : undefined}
             />
-            <Button title="Send code" onPress={sendCode} loading={loading} />
+            {mode !== 'reset' ? (
+              <Input
+                label="Password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                autoComplete={mode === 'sign-up' ? 'new-password' : 'current-password'}
+                onSubmitEditing={submit}
+                error={error}
+              />
+            ) : null}
+            <Button
+              title={mode === 'sign-in' ? 'Sign in' : mode === 'sign-up' ? 'Create account' : 'Send code'}
+              onPress={submit}
+              loading={loading}
+            />
+            {mode === 'sign-in' ? (
+              <>
+                <Button title="Create an account" variant="ghost" onPress={() => switchTo('sign-up')} />
+                <Button title="Forgot password?" variant="ghost" onPress={() => switchTo('reset')} />
+              </>
+            ) : (
+              <Button title="Back to sign in" variant="ghost" onPress={() => switchTo('sign-in')} />
+            )}
+            <View className="h-px bg-base-300" />
+            <Button title="Continue as guest" variant="ghost" onPress={guest} />
           </>
         )}
       </View>

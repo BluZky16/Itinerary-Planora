@@ -23,7 +23,7 @@ Bottom tabs on phone; on wide web screens the same menus show as a sidebar. Crea
 
 ### v1 (must have)
 
-1. **Accounts:** email sign-in with a one-time code (a 6-digit code emailed to the user, typed into the app; no redirect link, so no deep-link setup; no Google login in v1, to avoid Apple's Sign in with Apple requirement).
+1. **Accounts:** email + password (sign-up and password reset confirmed with a 6-digit emailed code, typed into the app; no redirect link, so no deep-link setup), and guest mode (Supabase anonymous sign-in) that can later be saved as an email + password account. This replaced the earlier email-code-only sign-in. No Google login in v1 (planned next, web first; see v2), to avoid Apple's Sign in with Apple requirement for now.
 2. **Trips:** create, edit, delete. Title, destination, start date, end date.
 3. **Day-by-day plan:** days generated from trip dates. Items have type, time, title, place, notes, cost. Add, edit, delete, reorder, move between days.
 4. **Places:** Google Places autocomplete; picking a place stores `place_id`, name, coordinates.
@@ -47,7 +47,7 @@ Bottom tabs on phone; on wide web screens the same menus show as a sidebar. Crea
 
 ### v2 (out of scope for v1)
 
-Collaborators with edit rights, expense split, a separate "actually paid" amount per item, a shaded world map for Travel Map, offline editing, file attachments (tickets, PDFs), packing list, weather, AI plan suggestions, ticket/email parsing with an LLM, hotel price/availability via booking APIs, PDF export, Google login / Sign in with Apple.
+Collaborators with edit rights, expense split, a separate "actually paid" amount per item, a shaded world map for Travel Map, offline editing, file attachments (tickets, PDFs), packing list, weather, AI plan suggestions, ticket/email parsing with an LLM, hotel price/availability via booking APIs, PDF export, Google login (next up: web first with Supabase's Google provider; phones need redirect handling, likely `expo-auth-session`) / Sign in with Apple.
 
 ### Smaller-option notes (decided to include unless changed)
 

@@ -19,6 +19,8 @@ export function TripForm({ initial, submitLabel, onSubmit }: Props) {
     destination: initial?.destination ?? '',
     start_date: initial?.start_date ?? '',
     end_date: initial?.end_date ?? '',
+    budget: initial?.budget != null ? String(initial.budget) : '',
+    currency: initial?.currency ?? '',
   });
   const [errors, setErrors] = useState<TripFormErrors>({});
   const [saveError, setSaveError] = useState('');
@@ -52,6 +54,8 @@ export function TripForm({ initial, submitLabel, onSubmit }: Props) {
       {/* shortcut: dates are typed as YYYY-MM-DD; swap for a date picker in phase 7. */}
       <Input label="Start date" placeholder="YYYY-MM-DD" autoCapitalize="none" {...field('start_date')} />
       <Input label="End date" placeholder="YYYY-MM-DD" autoCapitalize="none" {...field('end_date')} />
+      <Input label="Budget (optional)" placeholder="1500" keyboardType="decimal-pad" {...field('budget')} />
+      <Input label="Currency (optional)" placeholder="USD" autoCapitalize="characters" maxLength={3} {...field('currency')} />
       {saveError ? <Text className="text-sm text-error">{saveError}</Text> : null}
       <Button title={submitLabel} onPress={submit} loading={saving} />
     </View>

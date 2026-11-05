@@ -65,7 +65,7 @@ export default function TripDetail() {
         <Text className="text-sm text-base-content opacity-70">
           {formatDay(t.start_date)} to {formatDay(t.end_date)}
         </Text>
-        <Text className="text-base font-semibold text-base-content">Total cost: {formatCost(tripTotal(t))}</Text>
+        <Text className="text-base font-semibold text-base-content">Total cost: {formatCost(tripTotal(t), t.currency)}</Text>
       </View>
 
       {move.error ? <Text className="text-sm text-error">Could not move: {move.error.message}</Text> : null}

@@ -1,6 +1,13 @@
 import type { TripInput } from '@/api/trips';
 
-export type TripFormValues = { title: string; destination: string; start_date: string; end_date: string };
+export type TripFormValues = {
+  title: string;
+  destination: string;
+  start_date: string;
+  end_date: string;
+  budget: string;
+  currency: string;
+};
 export type TripFormErrors = Partial<Record<keyof TripFormValues, string>>;
 
 export const MAX_TRIP_DAYS = 90;
@@ -28,6 +35,18 @@ export function parseTripForm(v: TripFormValues): { errors: TripFormErrors } | {
   else if (isIsoDate(start) && (Date.parse(end) - Date.parse(start)) / 86_400_000 >= MAX_TRIP_DAYS)
     errors.end_date = `A trip can be at most ${MAX_TRIP_DAYS} days.`;
 
+  const budgetText = v.budget.trim();
+  const budget = budgetText ? Number(budgetText) : null;
+  if (budget !== null && (!Number.isFinite(budget) || budget < 0)) errors.budget = 'Enter a number, 0 or more.';
+
+  const currency = v.currency.trim().toUpperCase();
+  if (currency && !/^[A-Z]{3}$/.test(currency)) errors.currency = 'Use a 3-letter code, for example USD.';
+
   if (Object.keys(errors).length) return { errors };
-  return { input: { title, destination: v.destination.trim() || null, start_date: start, end_date: end } };
+  return {
+    input: {
+      title, destination: v.destination.trim() || null, start_date: start, end_date: end,
+      budget, currency: currency || null,
+    },
+  };
 }

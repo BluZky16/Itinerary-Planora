@@ -1,7 +1,7 @@
 /// <reference types="jest" />
 import { isIsoDate, parseTripForm } from './trip-form';
 
-const valid = { title: ' Bali ', destination: ' ', start_date: '2026-12-24', end_date: '2026-12-31' };
+const valid = { title: ' Bali ', destination: ' ', start_date: '2026-12-24', end_date: '2026-12-31', budget: '', currency: '' };
 
 test('isIsoDate accepts real dates only', () => {
   expect(isIsoDate('2026-12-24')).toBe(true);
@@ -13,7 +13,7 @@ test('isIsoDate accepts real dates only', () => {
 
 test('valid form is trimmed and empty destination becomes null', () => {
   expect(parseTripForm(valid)).toEqual({
-    input: { title: 'Bali', destination: null, start_date: '2026-12-24', end_date: '2026-12-31' },
+    input: { title: 'Bali', destination: null, start_date: '2026-12-24', end_date: '2026-12-31', budget: null, currency: null },
   });
 });
 
@@ -34,4 +34,12 @@ test('rejects missing title, bad dates and end before start', () => {
   expect(parseTripForm({ ...valid, end_date: '2026-12-23' })).toEqual({
     errors: { end_date: 'End date must be on or after the start date.' },
   });
+});
+
+test('budget and currency are optional, parsed and validated', () => {
+  expect(parseTripForm({ ...valid, budget: ' 1500.5 ', currency: 'usd' })).toHaveProperty('input.budget', 1500.5);
+  expect(parseTripForm({ ...valid, budget: '0', currency: 'usd' })).toHaveProperty('input.currency', 'USD');
+  expect(parseTripForm({ ...valid, budget: '-1' })).toHaveProperty('errors.budget');
+  expect(parseTripForm({ ...valid, budget: 'abc' })).toHaveProperty('errors.budget');
+  expect(parseTripForm({ ...valid, currency: 'US' })).toHaveProperty('errors.currency');
 });

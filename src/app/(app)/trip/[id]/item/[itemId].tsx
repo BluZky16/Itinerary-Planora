@@ -27,7 +27,7 @@ export default function EditItem() {
   }
   const days = plan.data.days;
   const done = async () => {
-    await queryClient.invalidateQueries({ queryKey: ['trips', id] });
+    await queryClient.invalidateQueries({ queryKey: ['trips'] }); // also refreshes Budget and Dashboard costs
     goBackOr({ pathname: '/trip/[id]', params: { id } });
   };
 

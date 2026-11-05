@@ -19,7 +19,7 @@ export default function NewItem() {
 
   async function save(input: ItemInput) {
     await createItem(dayId, day!.items.length, input); // new items go to the end of the day
-    await queryClient.invalidateQueries({ queryKey: ['trips', id, 'plan'] });
+    await queryClient.invalidateQueries({ queryKey: ['trips'] }); // also refreshes Budget and Dashboard costs
     goBackOr({ pathname: '/trip/[id]', params: { id } });
   }
 

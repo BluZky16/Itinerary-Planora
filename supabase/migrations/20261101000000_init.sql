@@ -1,5 +1,5 @@
 -- Phase 1 schema: profiles, trips, days, items. RLS on every table.
--- Share link access (get_shared_trip) is added in phase 5.
+-- Share link access (get_shared_trip) is added in phase 6.
 
 create table public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,

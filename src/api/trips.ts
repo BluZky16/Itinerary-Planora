@@ -1,4 +1,4 @@
-import { ITEM_COLUMNS, type Item } from '@/api/items';
+import { ITEM_COLUMNS, type Item, type ItemType } from '@/api/items';
 import { supabase } from '@/lib/supabase';
 
 export type Trip = {
@@ -7,11 +7,22 @@ export type Trip = {
   destination: string | null;
   start_date: string; // YYYY-MM-DD, trip-local
   end_date: string;
+  budget: number | null;
+  currency: string | null; // 3-letter code; applies to the budget and every item cost in the trip
 };
 
 export type TripInput = Omit<Trip, 'id'>;
 
-const COLUMNS = 'id, title, destination, start_date, end_date';
+const COLUMNS = 'id, title, destination, start_date, end_date, budget, currency';
+
+// Every trip with just the item types and costs, for the Budget and Dashboard screens.
+export type TripCosts = Trip & { days: { items: { type: ItemType; cost: number | null }[] }[] };
+
+export async function listTripCosts(): Promise<TripCosts[]> {
+  const { data, error } = await supabase.from('trips').select(`${COLUMNS}, days(items(type, cost))`).order('start_date');
+  if (error) throw error;
+  return data as TripCosts[];
+}
 
 export async function listTrips(): Promise<Trip[]> {
   const { data, error } = await supabase.from('trips').select(COLUMNS).order('start_date');

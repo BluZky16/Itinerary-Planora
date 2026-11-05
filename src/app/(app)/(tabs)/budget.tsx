@@ -1,5 +1,67 @@
-import { ComingSoon } from '@/components/coming-soon';
+import { useQuery } from '@tanstack/react-query';
+import { router } from 'expo-router';
+import { FlatList, Pressable, Text, View } from 'react-native';
+
+import { ITEM_TYPES } from '@/api/items';
+import { listTripCosts, type TripCosts } from '@/api/trips';
+import { TYPE_LABELS } from '@/components/item-form';
+import { ScreenState } from '@/components/screen-state';
+import { costByType, formatCost, tripTotal } from '@/lib/plan';
 
 export default function Budget() {
-  return <ComingSoon title="Budget Planner" phase={5} />;
+  const trips = useQuery({ queryKey: ['trips', 'costs'], queryFn: listTripCosts });
+
+  if (!trips.data) return <ScreenState error={trips.error} onRetry={() => trips.refetch()} />;
+
+  return (
+    <FlatList
+      className="flex-1 bg-base-200"
+      data={trips.data}
+      keyExtractor={(t) => t.id}
+      contentContainerClassName="mx-auto w-full max-w-xl gap-3 p-4"
+      ListEmptyComponent={
+        <Text className="py-8 text-center text-base text-base-content">
+          No trips yet. Create a trip, then add costs to its items.
+        </Text>
+      }
+      renderItem={({ item }) => <TripBudget trip={item} />}
+    />
+  );
+}
+
+function TripBudget({ trip }: { trip: TripCosts }) {
+  const planned = tripTotal(trip);
+  const byType = costByType(trip);
+  const remaining = trip.budget == null ? null : trip.budget - planned;
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={() => router.push({ pathname: '/trip/[id]', params: { id: trip.id } })}
+      className="gap-2 rounded-2xl bg-base-100 p-4">
+      <Text className="text-lg font-semibold text-base-content">{trip.title}</Text>
+      <Row label="Budget" value={trip.budget == null ? 'Not set (edit the trip)' : formatCost(trip.budget, trip.currency)} />
+      <Row label="Planned" value={formatCost(planned, trip.currency)} />
+      {remaining != null ? (
+        <Row
+          label={remaining < 0 ? 'Over budget' : 'Remaining'}
+          value={formatCost(Math.abs(remaining), trip.currency)}
+          bad={remaining < 0}
+        />
+      ) : null}
+      {ITEM_TYPES.filter((t) => byType[t]).map((t) => (
+        <Row key={t} label={TYPE_LABELS[t]} value={formatCost(byType[t]!, trip.currency)} muted />
+      ))}
+    </Pressable>
+  );
+}
+
+function Row({ label, value, bad, muted }: { label: string; value: string; bad?: boolean; muted?: boolean }) {
+  return (
+    <View className="flex-row justify-between">
+      <Text className={`text-base text-base-content ${muted ? 'opacity-70' : ''}`}>{label}</Text>
+      <Text className={`text-base font-medium ${bad ? 'text-error' : 'text-base-content'} ${muted ? 'opacity-70' : ''}`}>
+        {value}
+      </Text>
+    </View>
+  );
 }
